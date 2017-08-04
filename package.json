@@ -6,6 +6,7 @@
     "node": ">=4"
   },
   "scripts": {
+    "mysql":"node bin/automigrate",
     "lint": "eslint .",
     "start": "node .",
     "posttest": "npm run lint && nsp check"
