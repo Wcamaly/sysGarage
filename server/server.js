@@ -1,9 +1,26 @@
 'use strict';
 
-var loopback = require('loopback');
-var boot = require('loopback-boot');
+const loopback = require('loopback');
+const boot = require('loopback-boot');
 
-var app = module.exports = loopback();
+const app = module.exports = loopback();
+const bodyParser  = require('body-parser');
+const path = require('path');
+const errorHandler = require('strong-error-handler');
+
+app.use(bodyParser.urlencoded());
+
+// Parsin to be able to handle json in the answers
+app.use(bodyParser.json());
+
+app.use(loopback.token());
+
+// managment Errors
+app.use(errorHandler({
+  debug: app.get('env') === 'development',
+  log: true,
+}));
+
 
 app.start = function() {
   // start the web server

@@ -1,0 +1,43 @@
+<!DOCTYPE html >
+<html ng-app="myApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>SysGarage - System</title>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+</head>
+<body  ng-controller="ctrl">
+  <h1>HEllo World</h1>
+
+  <button ng-click="test()" >Push me!</button>
+
+
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+
+
+  <!-- Angular Material Library -->
+  
+
+
+  <script>
+    const app = angular.module('myApp',[ ]);
+    app.controller('ctrl', ['$scope','$http', ($scope , $http) => {
+
+      $scope.test = () => {
+        console.log('test');
+        $http.post('/user/signUpAdmin',).then( (data) => {
+          console.log(data)
+        }, (err) => {
+          console.log(err)
+        });
+      }
+
+      
+    }])
+
+  </script>
+
+</body>
+</html>
