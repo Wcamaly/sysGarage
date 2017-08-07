@@ -9,15 +9,14 @@ module.exports = (Primenumber) => {
    * @return boolean  prime response a question it number is prime ?
    */
   Primenumber.calcPrime = (num, cb) => {
-    Primenumber.create({
+    let obj = {
       num: num,
       prime: Utils.primeNumber(num)
-    }, (err, data) => {
-      if (err) return cb(err)
-      cb(data)
-    })
+    }
+    cb(null, obj)
   }
   Primenumber.remoteMethod('calcPrime', {
+    accepts: {arg: 'num', type: 'number'},
     returns: [
       {arg: 'num', type: 'number'},
       {arg: 'prime', type: 'boolean'}

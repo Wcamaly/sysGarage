@@ -56,27 +56,24 @@ test.afterEach('delete Users', async (t) => {
     })
   })
 })
-
 /**
  * SignUp sussesfull
  */
-test('SignUp Client susseful', async (t) => {
+test('Create user susseful', async (t) => {
   let user = fixtures.getUser()
   // let url = t.context.url
   let options = {
     method: 'POST',
-    url: `${url}/auth/signUp`,
+    url: `${url}/api/users`,
     json: true,
     body: user,
     resolveWithFullResponse: true
   }
 
   let res = await request(options)
-  t.is(res.statusCode, 201)
-  t.context.idUser = res.body.id
-  t.is(res.body.username, user.username)
+  t.is(res.statusCode, 200)
+  t.deepEqual(res.body.username, user.username)
 })
-
 /**
  * Sign UP fail user repeat
  */
@@ -84,7 +81,7 @@ test('SignUp Client user repeat', async (t) => {
   let user = fixtures.getUser()
   let options = {
     method: 'POST',
-    url: `${url}/auth/signUp`,
+    url: `${url}/api/users`,
     json: true,
     body: user,
     resolveWithFullResponse: true
@@ -93,18 +90,18 @@ test('SignUp Client user repeat', async (t) => {
   t.context.idUser = res.body.id
   let duplicate = await request(options)
 
-  t.is(duplicate.statusCode, 200)
-  t.deepEqual(duplicate.body.message, 'This user already exists')
+  t.is(duplicate.statusCode, 422)
+  t.deepEqual(duplicate.body.error.name, 'ValidationError')
 })
 /**
  * Sign UP fail user repeat
  */
 test('SignUp Client user Role no exist', async (t) => {
   let user = fixtures.getUser()
-  user.usertype = 'admin'
+  user.userType = 'error'
   let options = {
     method: 'POST',
-    url: `${url}/auth/signUp`,
+    url: `${url}/api/users`,
     json: true,
     body: user,
     resolveWithFullResponse: true
@@ -112,8 +109,8 @@ test('SignUp Client user Role no exist', async (t) => {
   let res = await request(options)
   t.context.idUser = res.body.id
 
-  t.is(res.statusCode, 500)
-  t.deepEqual(res.body.message, 'Error at create relations')
+  t.is(res.statusCode, 400)
+  t.deepEqual(res.body.error.message, 'Error at create relations')
 })
 
 /**
@@ -123,30 +120,103 @@ test('Login User', async (t) => {
   let user = fixtures.getUser()
   let options = {
     method: 'POST',
-    url: `${url}/auth/signUp`,
+    url: `${url}/api/users`,
     json: true,
-    body: user,
-    resolveWithFullResponse: true
+    body: user
   }
   let res = await request(options)
   t.context.idUser = res.body.id
+
   let credential = {
-    username: user.username,
+    email: user.email,
     password: user.password
   }
   let optionsLogin = {
     method: 'POST',
-    url: `${url}/auth/login`,
+    url: `${url}/api/users/login`,
     json: true,
     body: credential,
+    resolveWithFullResponse: true
   }
 
-  let result = awai request(optionsLogin)
+  let result = await request(optionsLogin)
   t.is(result.statusCode, 200)
-  consle.log(`${JSON.stringify(result)}`)
+  t.is(result.body.username, user.username)
+})
+/**
+ * Login user
+ */
+test('Login User error credential', async (t) => {
+  let user = fixtures.getUser()
+  let options = {
+    method: 'POST',
+    url: `${url}/api/users`,
+    json: true,
+    body: user
+  }
+  let res = await request(options)
+  t.context.idUser = res.body.id
 
+  let credential = {
+    email: user.email,
+    password: 'passwordEror'
+  }
+  let optionsLogin = {
+    method: 'POST',
+    url: `${url}/api/users/login`,
+    json: true,
+    body: credential,
+    resolveWithFullResponse: true
+  }
 
+  let result = await request(optionsLogin)
+  t.is(result.statusCode, 401)
+  t.is(result.body.error.message, 'login failed')
+})
+/**
+ * List user
+ */
+test('List User', async (t) => {
+  let user = fixtures.getUser()
+  let options = {
+    method: 'POST',
+    url: `${url}/api/users`,
+    json: true,
+    body: user
+  }
+  let res = await request(options)
+  t.context.idUser = res.body.id
 
+  let credential = {
+    email: user.email,
+    password: user.password
+  }
+  let optionsLogin = {
+    method: 'POST',
+    url: `${url}/api/users/login`,
+    json: true,
+    body: credential,
+    resolveWithFullResponse: true
+  }
 
+  let response = await request(optionsLogin)
+  let auth = response.headers['X-Access-Token']
+  let i = auth.indexOf(':') + 1
+  let accessToken = auth.substr(i, auth.length)
 
+  let optionsListUser = {
+    method: 'POST',
+    url: `${url}/api/users/listUsers?access_token=${accessToken}`,
+    json: true,
+    body: {
+      userId: response.body.id
+    },
+    resolveWithFullResponse: true
+  }
+
+  let result = await request(optionsListUser)
+  t.is(result.statusCode, 200)
+  result.body.forEach((val, i) => {
+    t.false(val.id === response.body.id)
+  })
 })

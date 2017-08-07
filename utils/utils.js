@@ -55,12 +55,15 @@ function createRole (obj, cb) {
 function relationMapingRole (obj, cb) {
   let Role = app.models.Role
   let RoleMapping = app.models.RoleMapping
+  let User = app.models.user
   Role.findOne({
     where: {
       name: obj.name
     }
   }, (err, role) => {
+    console.log(`${err}  --- ROLE ${JSON.stringify(role)}`)
     if (err || role === null) {
+      User.destroyById(obj.userId)
       return cb(message.errorCreateRoleMapping, null)
     } else {
       role.principals.create({

@@ -2,7 +2,7 @@
 
 const loopback = require('loopback')
 const boot = require('loopback-boot')
-
+const at = require('./boot/middleware/accesToken')
 const app = module.exports = loopback()
 const bodyParser = require('body-parser')
 const errorHandler = require('strong-error-handler')
@@ -15,13 +15,11 @@ app.use(bodyParser.json())
 app.use(loopback.token())
 
 app.use(loopback.token({
-  model: app.models.accessToken,
-  currentUserLiteral: 'me',
-  searchDefaultTokenKeys: false,
   cookies: ['access_token'],
   headers: ['access_token', 'X-Access-Token'],
   params: ['access_token']
 }))
+app.use(at)
 
 //  managment Errors
 app.use(errorHandler({

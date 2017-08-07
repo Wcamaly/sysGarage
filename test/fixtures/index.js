@@ -6,7 +6,7 @@ const fixtures = {
       username: 'test',
       password: '1234',
       email: 'test@sysgarage.com',
-      usertype: 'testing'
+      userType: 'testing'
     }
   },
   getRole () {
