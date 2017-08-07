@@ -34,5 +34,13 @@
   "Role": {
     "dataSource": "mysqlDb",
     "public": false
+  },
+  "PrimeNumber": {
+    "dataSource": "db",
+    "public": false
+  },
+  "user": {
+    "dataSource": "mysqlDb",
+    "public": false
   }
 }

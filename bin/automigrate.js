@@ -1,48 +1,63 @@
 /**
- * 
- * Create Tables in data base 
- * 
+ *
+ * Create Tables in data base
+ *
  */
 
-// APP SERVER 
-const app = require('../server/server.js');
+// APP SERVER
+const app = require('../server/server.js')
 // Instance db
-const db = app.dataSources.mysqlDb;
-const User = app.models.User;
-const Role = app.models.Role;
+const db = app.dataSources.mysqlDb
 
-// List to Models 
-let models = ['User','AccessToken','ACL','RoleMapping','Role'];
+// List to Models
 
-
-db.automigrate(models, (err) => {
-  if (err) throw new Error(err);
-  console.log("Congratulations you created the tables successfully ");
-  //Create User Admin if not exist 
-  User.create([
-    {"username": "clientes", "email": "johns@doe.com", "password": "1234"},
-    {username: 'admin', email: 'jane@doe.com', password: 'admin'},
-    {username: 'Bob', email: 'bob@projects.com', password: 'opensesame'}
-  ], function(err, users) {
-    console.log(err)
-    if (err) throw err;
-
-    //create the admin role
-    Role.create({
-      name: 'admin'
-    }, function(err, role) {
-      if (err) cb(err);
-
-      //make bob an admin
-      role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: users[2].id
-      }, function(err, principal) {
-        cb(err);
-      });
-    });
-  });
-
-  db.disconnect();
+/**
+ * Create Role Table
+ * @param  String 'Role' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('Role', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations your created Table Roles')
+  db.disconnect()
 })
-
+/**
+ * Create Table Role Mapping
+ * @param  String 'RoleMapping' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('RoleMapping', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table RoleMapping')
+  db.disconnect()
+})
+/**
+ * Create Table AccessToken
+ * @param  String 'AccessToken' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('AccessToken', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations your created  table AccessToken')
+  db.disconnect()
+})
+/**
+ * Create Table ACL
+ * @param  String 'ACL' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('ACL', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table ACL')
+  db.disconnect()
+})
+/**
+ * Create Table User
+ * @param  String 'User' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('user', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table User')
+  db.disconnect()
+})

@@ -41,8 +41,8 @@
     }
   },
   "files": {
-     "loopback#static": {
-      "params": "$!../client" 
+    "loopback#static": {
+      "params": "$!../client"
     }
   },
   "final": {
@@ -51,9 +51,9 @@
   "final:after": {
     "strong-error-handler": {
       "params": {
-         "debug": false,
-         "log": true
-       }
+        "debug": false,
+        "log": true
+      }
     }
   }
 }

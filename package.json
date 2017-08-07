@@ -7,11 +7,15 @@
   },
   "scripts": {
     "mysql": "node bin/automigrate",
-    "lint": "eslint .",
+    "lint": "standard",
     "start": "node .",
-    "posttest": "npm run lint && nsp check"
+    "test": "npm run lint && ava --serial test/**-test.js"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
@@ -25,14 +29,18 @@
     "strong-error-handler": "^2.2.0"
   },
   "devDependencies": {
+    "ava": "^0.21.0",
+    "babel-eslint": "^7.2.3",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
-    "nsp": "^2.1.0"
+    "request-promises": "^1.1.0",
+    "test-listen": "^1.0.2"
   },
   "repository": {
-    "type": "",
-    "url": ""
+    "type": "git",
+    "url": "https://github.com/mrTater/sysGarage.git"
   },
-  "license": "UNLICENSED",
-  "description": "sysGarage"
+  "license": "MIT",
+  "description": "sysGarage - Test for interview",
+  "author": "<Walter Camaly> waltercamaly@gmail.com"
 }
