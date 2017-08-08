@@ -97,47 +97,53 @@ module.exports = (User) => {
   User.managmentPermission = (user,actions, cb) => {
     let perm = app.models.permissions
     let create = []
-    actions.forEach((val, i) => {
-      create.push({
-        userId: user.id,
-        actionId: val.actionId,
-        status: val.status
-      })
-    })
-     Utils.createPermission(create,
-      (err, res) => {
-        console.log(`Erro --- ${JSON.stringify(res)}`)
-        if (err) return cb(err)
-        return cb(null, { satus: "Succesfull" })
-      })
-
-
     // actions.forEach((val, i) => {
-    //   perm.findOne({where: {
-    //       userId: user.id,
-    //       actionId: val.actionId
-    //   }},
-    //   (err, res) => {
-    //     if (err) return cb(err)
-    //     if (res) {
-    //       res.satus = val.status
-    //       res.save()
-    //       response.push(res)
-    //     } else {
-    //       Utils.createPermission({
-    //         userId: user.id,
-    //         actionId: val.actionId,
-    //         status: val.status
-    //       },
-    //       (err, res) => {
-    //         console.log(`Erro --- ${i}`)
-    //         if (err) return cb(err)
-    //         console.log('Creamos todo voy a continuar OK')
-    //         response.push(res)
-    //       })
-    //     }
+    //   create.push({
+    //     userId: user.id,
+    //     actionId: val.actionId,
+    //     status: val.status
     //   })
     // })
+    //  Utils.createPermission(create,
+    //   (err, res) => {
+    //     console.log(`Erro --- ${JSON.stringify(res)}`)
+    //     if (err) return cb(err)
+    //     return cb(null, { satus: "Succesfull" })
+    //   })
+
+
+    actions.forEach((val, i) => {
+      perm.findOne({where: {
+          userId: user.id,
+          actionId: val.actionId
+      }},
+      (err, res) => {
+        if (err) return cb(err)
+        if (res) {
+          res.satus = val.status
+          res.save()
+          response.push(res)
+        } else {
+          Utils.createPermission({
+            userId: user.id,
+            actionId: val.actionId,
+            status: val.status
+          },
+          (err, res) => {
+            console.log(`Erro --- ${i}`)
+            if (err) return cb(err)
+            console.log('Creamos todo voy a continuar OK')
+            response.push(res)
+
+          })
+        }
+
+
+       if( i === actions.length-1){
+
+       }
+      })
+    })
 
 
 
