@@ -1,0 +1,33 @@
+{
+  "name": "permissions",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "userId": {
+      "type": "number",
+      "required": true
+    },
+    "actionId": {
+      "type": "number",
+      "required": true
+    },
+    "status": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "actions": {
+      "type": "belongsTo",
+      "model": "actions",
+      "foreignKey": "actionId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
