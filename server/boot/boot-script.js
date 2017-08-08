@@ -16,9 +16,11 @@ module.exports = (app) => {
       description: 'Is Role for admin'
     }]
     croles.forEach((val, i) => {
-      Utils.createRole(val, (req) => {
-        console.log(`Se creo el Role ${req.name}`)
-      })
+      if (typeof Utils.createRole === 'function') {
+        Utils.createRole(val, (req) => {
+          console.log(`Se creo el Role ${req.name}`)
+        })
+      }
     })
 
     /**
@@ -41,16 +43,36 @@ module.exports = (app) => {
         username: val.username
       }}, (err, req) => {
         if (err) throw err
+        console.log(`URL ${app.get('url')}`)
         if (!req) {
           let options = {
             method: 'POST',
-            url: `${app.get('url')}/api/users/`,
+            url: `${app.get('url')}api/users/`,
             json: true,
             body: val
           }
           request(options)
         }
       })
+    })
+
+    /**
+     * Action Defaults
+     */
+    let actions = [{
+      actionName: 'create',
+      description: 'Create User Admin'
+    },
+    {
+      actionName: 'calcPrime',
+      description: 'Calculater if number is prime'
+    },
+    {
+      actionName: 'adminPermissions',
+      description: 'Managment permissions'
+    }]
+    Utils.createAction(actions, (req) => {
+      console.log('Congratulation you a created Actions')
     })
   })
 }

@@ -7,7 +7,9 @@ const message = require('../const/strings')
 const Utils = {
   primeNumber,
   createRole,
-  relationMapingRole
+  relationMapingRole,
+  createAction,
+  createPermission
 }
 
 function primeNumber (num) {
@@ -32,7 +34,6 @@ function createRole (obj, cb) {
   let Role = app.models.Role
   Role.find({where: {name: obj.name}}, (err, data) => {
     if (err) {
-      console.log('error 1')
       throw err
     }
     if (data.length === 0) {
@@ -41,7 +42,6 @@ function createRole (obj, cb) {
         description: obj.description
       }], (err, role) => {
         if (err) {
-          console.log('error 2')
           throw err
         }
         cb(role[0])
@@ -61,7 +61,6 @@ function relationMapingRole (obj, cb) {
       name: obj.name
     }
   }, (err, role) => {
-    console.log(`${err}  --- ROLE ${JSON.stringify(role)}`)
     if (err || role === null) {
       User.destroyById(obj.userId)
       return cb(message.errorCreateRoleMapping, null)
@@ -74,6 +73,23 @@ function relationMapingRole (obj, cb) {
         return cb(null, principal)
       })
     }
+  })
+}
+
+function createAction (obj, cb) {
+  let Actions = app.models.actions
+
+  Actions.create(obj, (err, action) => {
+    if (err) throw err
+    cb(action)
+  })
+}
+
+function createPermission(obj, cb) {
+  let Perm = app.models.permissions
+  Perm.create(obj, (err, perm) => {
+    if (err) throw err
+    cb(perm)
   })
 }
 

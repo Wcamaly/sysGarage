@@ -15,10 +15,10 @@
   },
   "User": {
     "dataSource": "mysqlDb",
-    "public" : false
+    "public": false
   },
   "AccessToken": {
-    "dataSource": "mysqlDb",
+    "dataSource": "db",
     "public": false
   },
   "ACL": {
@@ -44,6 +44,13 @@
     "dataSource": "mysqlDb",
     "public": true,
     "options": {}
+  },
+  "actions": {
+    "dataSource": "mysqlDb",
+    "public": false
+  },
+  "permissions": {
+    "dataSource": "mysqlDb",
+    "public": false
   }
 }
-

@@ -31,16 +31,7 @@ db.automigrate('RoleMapping', (err) => {
   console.log('Congratulations you created table RoleMapping')
   db.disconnect()
 })
-/**
- * Create Table AccessToken
- * @param  String 'AccessToken' Name for Model
- * @param  function (err)  callback to promises
- */
-db.automigrate('AccessToken', (err) => {
-  if (err) throw new Error(err)
-  console.log('Congratulations your created  table AccessToken')
-  db.disconnect()
-})
+
 /**
  * Create Table ACL
  * @param  String 'ACL' Name for Model
@@ -59,5 +50,25 @@ db.automigrate('ACL', (err) => {
 db.automigrate('user', (err) => {
   if (err) throw new Error(err)
   console.log('Congratulations you created table User')
+  db.disconnect()
+})
+/**
+ * Create Table actions
+ * @param  String 'actions' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('actions', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table Actions')
+  db.disconnect()
+})
+/**
+ * Create Table permissions
+ * @param  String 'permissions' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('permissions', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table Permissions')
   db.disconnect()
 })

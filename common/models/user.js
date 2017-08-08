@@ -77,4 +77,39 @@ module.exports = (User) => {
     returns: {arg: 'Users', type: 'array'},
     http: {path: '/listUsers', verb: 'post'}
   })
+
+  User.managmentPermission = (obj, cb) => {
+    let perm = app.models.permissions
+    obj.actions.forEach((val, i) => {
+      perm.findOne({where: {
+          userId: obj.user.id,
+          actionId: val.actionId
+      }},
+      (err, res) => {
+        if (err) return cb(err)
+        if (res) {
+          res.satus = val.status
+          res.save()
+        } else {
+          Utils.createPermission({
+            userId: obj.user.id,
+            actionId: val.actionId,
+            status: val.status
+          },
+          (err, res) => {
+            if (err) return cb(err)
+            return cb(null, {
+              satus: "Succesfull"
+            })
+          })
+        }
+      })
+    })
+  }
+  User.remoteMethod('managmentPermission', {
+    accepts: {arg: 'obj', type: 'object'},
+    returns: {arg: 'status', type: 'string'},
+    http: {path: '/managmentPermission', verb: 'post'}
+  })
+
 }
