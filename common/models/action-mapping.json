@@ -1,0 +1,26 @@
+{
+  "name": "ActionMapping",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "actionsId": {
+      "type": "number",
+      "required": true
+    },
+    "roleId": {
+      "type": "number",
+      "required": true
+    },
+    "principalType": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

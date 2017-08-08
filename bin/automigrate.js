@@ -11,16 +11,7 @@ const db = app.dataSources.mysqlDb
 
 // List to Models
 
-/**
- * Create Role Table
- * @param  String 'Role' Name for Model
- * @param  function (err)  callback to promises
- */
-db.automigrate('Role', (err) => {
-  if (err) throw new Error(err)
-  console.log('Congratulations your created Table Roles')
-  db.disconnect()
-})
+
 /**
  * Create Table Role Mapping
  * @param  String 'RoleMapping' Name for Model
@@ -31,15 +22,14 @@ db.automigrate('RoleMapping', (err) => {
   console.log('Congratulations you created table RoleMapping')
   db.disconnect()
 })
-
 /**
- * Create Table ACL
- * @param  String 'ACL' Name for Model
+ * Create Role Table
+ * @param  String 'Role' Name for Model
  * @param  function (err)  callback to promises
  */
-db.automigrate('ACL', (err) => {
+db.automigrate('role', (err) => {
   if (err) throw new Error(err)
-  console.log('Congratulations you created table ACL')
+  console.log('Congratulations your created Table extendRole')
   db.disconnect()
 })
 /**
@@ -72,3 +62,14 @@ db.automigrate('permissions', (err) => {
   console.log('Congratulations you created table Permissions')
   db.disconnect()
 })
+/**
+ * Create Table ActionMapping
+ * @param  String 'ActionMapping' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('ActionMapping', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table ActionMapping')
+  db.disconnect()
+})
+

@@ -2,8 +2,10 @@
 const Utils = require('../../utils/utils')
 const app = require('../../server/server')
 module.exports = (User) => {
+
   User.validatesUniquenessOf('email', {message: 'This user already exists'})
   User.validatesUniquenessOf('name', {message: 'This user already exists'})
+
  /**
    * Redefine login
    * @param  String 'login'   method to after ejectute
@@ -20,9 +22,10 @@ module.exports = (User) => {
     if (user.userType) {
       Utils.relationMapingRole({
         name: user.userType,
-        userId: user.id
+        principalId: user.id,
       }, (err, req) => {
         if (err) {
+          User.destroyById(user.id)
           let error = new Error()
           error.status = 400
           error.message = err
@@ -46,27 +49,40 @@ module.exports = (User) => {
    */
   User.afterRemote('login', (context, next) => {
     let RoleMapping = app.models.RoleMapping
-    let Role = app.models.Role
+    let Role = app.models.role
     let accesToken = context.result.id
     context.res.setAccesToken(accesToken)
     console.log('user remote logi')
-    User.findById(context.result.userId, {fields: {'username': true, 'email': true, 'id': true}}, (err, req) => {
-      if (err) next(err)
-      RoleMapping.findOne({where: {principalId: req.id}}, (err, mapping) => {
+
+    User.findById(context.result.userId,{
+      fields: {'username': true, 'email': true, 'id': true},
+      include: {
+        relation: 'role'
+      }
+    }, (err, res) => {
+      try {
+        console.log(`${err}`)
         if (err) throw err
-        Role.findById(mapping.roleId, (err, role) => {
-          if (err) throw err
-          req.role = role.name
-          context.res.json(req)
-        })
-      })
+        context.res.json(res)
+      } catch (e) {
+        let error = new Error('If an error occurred, please try again later')
+        context.res.send(error)
+      }
+
     })
   })
 
   User.listUsers = (userId, cb) => {
+    console.log(`primero aqui`)
     User.find({
+      where: {id: {nin: [userId]}},
       fields: {'username': true, 'email': true, 'id': true},
-      where: {id: {nin: [userId]}}
+      include: {
+        relation: 'role', // include the owner object
+        scope: { // further filter the owner object
+          fields: {'name': true} // only show two fields
+        }
+      }
     }, (err, req) => {
       if (err) throw err
       cb(null, req)
@@ -78,37 +94,59 @@ module.exports = (User) => {
     http: {path: '/listUsers', verb: 'post'}
   })
 
-  User.managmentPermission = (obj, cb) => {
+  User.managmentPermission = (user,actions, cb) => {
     let perm = app.models.permissions
-    obj.actions.forEach((val, i) => {
-      perm.findOne({where: {
-          userId: obj.user.id,
-          actionId: val.actionId
-      }},
-      (err, res) => {
-        if (err) return cb(err)
-        if (res) {
-          res.satus = val.status
-          res.save()
-        } else {
-          Utils.createPermission({
-            userId: obj.user.id,
-            actionId: val.actionId,
-            status: val.status
-          },
-          (err, res) => {
-            if (err) return cb(err)
-            return cb(null, {
-              satus: "Succesfull"
-            })
-          })
-        }
+    let create = []
+    actions.forEach((val, i) => {
+      create.push({
+        userId: user.id,
+        actionId: val.actionId,
+        status: val.status
       })
     })
+     Utils.createPermission(create,
+      (err, res) => {
+        console.log(`Erro --- ${JSON.stringify(res)}`)
+        if (err) return cb(err)
+        return cb(null, { satus: "Succesfull" })
+      })
+
+
+    // actions.forEach((val, i) => {
+    //   perm.findOne({where: {
+    //       userId: user.id,
+    //       actionId: val.actionId
+    //   }},
+    //   (err, res) => {
+    //     if (err) return cb(err)
+    //     if (res) {
+    //       res.satus = val.status
+    //       res.save()
+    //       response.push(res)
+    //     } else {
+    //       Utils.createPermission({
+    //         userId: user.id,
+    //         actionId: val.actionId,
+    //         status: val.status
+    //       },
+    //       (err, res) => {
+    //         console.log(`Erro --- ${i}`)
+    //         if (err) return cb(err)
+    //         console.log('Creamos todo voy a continuar OK')
+    //         response.push(res)
+    //       })
+    //     }
+    //   })
+    // })
+
+
+
+
   }
   User.remoteMethod('managmentPermission', {
-    accepts: {arg: 'obj', type: 'object'},
-    returns: {arg: 'status', type: 'string'},
+    accepts: [{arg: 'user', type: 'Object'},
+              {arg: 'actions', type: 'Object'}],
+    returns: {arg: 'data', type: 'Object'},
     http: {path: '/managmentPermission', verb: 'post'}
   })
 

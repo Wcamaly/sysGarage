@@ -22,7 +22,7 @@
     "public": false
   },
   "ACL": {
-    "dataSource": "mysqlDb",
+    "dataSource": "db",
     "public": false
   },
   "RoleMapping": {
@@ -42,14 +42,21 @@
   },
   "user": {
     "dataSource": "mysqlDb",
-    "public": true,
-    "options": {}
+    "public": true
   },
   "actions": {
     "dataSource": "mysqlDb",
     "public": false
   },
   "permissions": {
+    "dataSource": "mysqlDb",
+    "public": false
+  },
+  "role": {
+    "dataSource": "mysqlDb",
+    "public": false
+  },
+  "ActionMapping": {
     "dataSource": "mysqlDb",
     "public": false
   }

@@ -1,0 +1,20 @@
+{
+  "name": "role",
+  "base": "Role",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "actions": {
+      "type": "hasMany",
+      "model": "actions",
+      "foreignKey": "roleId",
+      "through": "ActionMapping"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

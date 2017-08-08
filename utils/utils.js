@@ -9,9 +9,14 @@ const Utils = {
   createRole,
   relationMapingRole,
   createAction,
-  createPermission
+  createPermission,
+  relationActionsMapingRole
 }
-
+/**
+ * primeNumber  Calculator is prime num
+ * @param  Number num is number
+ * @return Boolean     Response
+ */
 function primeNumber (num) {
   let prime = true
   if (num === 1 || num === 2) {
@@ -29,9 +34,14 @@ function primeNumber (num) {
   }
   return prime
 }
-
+/**
+ * [createRole Create Role by obj]
+ * @param  Array/object   obj Cotains the roles at create
+ * @param  {Function} cb  callback to ejecuter finished created
+ * @return Array/object       roles created
+ */
 function createRole (obj, cb) {
-  let Role = app.models.Role
+  let Role = app.models.role
   Role.find({where: {name: obj.name}}, (err, data) => {
     if (err) {
       throw err
@@ -53,21 +63,21 @@ function createRole (obj, cb) {
 }
 
 function relationMapingRole (obj, cb) {
-  let Role = app.models.Role
-  let RoleMapping = app.models.RoleMapping
-  let User = app.models.user
+  let Role = app.models.role
+  let Mapping = app.models.RoleMapping
+
   Role.findOne({
     where: {
       name: obj.name
     }
   }, (err, role) => {
     if (err || role === null) {
-      User.destroyById(obj.userId)
+
       return cb(message.errorCreateRoleMapping, null)
     } else {
       role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: obj.userId
+        principalType: Mapping.USER,
+        principalId: obj.principalId
       }, (err, principal) => {
         if (err) throw err
         return cb(null, principal)
@@ -76,10 +86,36 @@ function relationMapingRole (obj, cb) {
   })
 }
 
+function relationActionsMapingRole (obj, cb) {
+  let Role = app.models.role
+  let Mapping = app.models.ActionMapping
+
+  Role.findOne({
+    where: {
+      name: obj.name
+    }
+  }, (err, role) => {
+    if (err || role === null) {
+      return cb(message.errorCreateRoleMapping, null)
+    } else {
+      Mapping.create({
+        principalType: Mapping.ACTIONS,
+        actionsId: obj.principalId,
+        roleId: role.id
+      }, (err, mapping) => {
+        if (err) throw err
+        return cb(null, mapping)
+      })
+    }
+  })
+}
+
 function createAction (obj, cb) {
+  console.log('llego hasta aca soy un grande')
   let Actions = app.models.actions
 
   Actions.create(obj, (err, action) => {
+
     if (err) throw err
     cb(action)
   })
@@ -87,9 +123,10 @@ function createAction (obj, cb) {
 
 function createPermission(obj, cb) {
   let Perm = app.models.permissions
-  Perm.create(obj, (err, perm) => {
-    if (err) throw err
-    cb(perm)
+  Perm.upsert(obj, (err, perm) => {
+     console.log(`ERROR ${err} -- ${JSON.stringify(perm)}`)
+    if (err) cb(err, null)
+    cb(null,perm)
   })
 }
 

@@ -29,7 +29,7 @@ test.before('Start app', async (t) => {
 })
 test.after('delete Elements', async (t) => {
   console.log('delete Elements')
-  let Role = app.models.Role
+  let Role = app.models.extendRole
   let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {
     Role.destroyAll({where: {name: 'testing'}}, (err) => {

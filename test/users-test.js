@@ -35,7 +35,7 @@ test.before('Start app', async (t) => {
 // })
 
 test.after('delete Elements', async (t) => {
-  let Role = app.models.Role
+  let Role = app.models.role
   let RoleMapping = app.models.RoleMapping
   // let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {

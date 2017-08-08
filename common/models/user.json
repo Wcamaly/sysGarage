@@ -9,6 +9,12 @@
       "type": "belongsTo",
       "model": "permissions",
       "foreignKey": ""
+    },
+    "role": {
+      "type": "hasMany",
+      "model": "role",
+      "foreignKey": "principalId",
+      "through": "RoleMapping"
     }
   },
   "acls": [
@@ -24,6 +30,13 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "create"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "login"
     },
     {
       "accessType": "EXECUTE",
@@ -66,6 +79,13 @@
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "listUsers"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "managmentPermission"
     },
     {
       "accessType": "EXECUTE",
