@@ -23,6 +23,7 @@ module.exports = (User) => {
 
     perRoleCre.find({
       include: [{
+        where: {createRoleId: createRole.id }
         relation:'role',
         scope:{
           fields: ['name','id']
@@ -38,7 +39,7 @@ module.exports = (User) => {
 
       try {
         if (err) throw err
-        console.log(`first if ${res.createRole && userId}`)
+        console.log(`first if ${userId}  -- ${res.createRole}`)
       console.log(`!userId}`)
 
         if (res.createRole && userId) {
