@@ -3,7 +3,11 @@
  */
 const app = require('../server/server')
 const message = require('../const/strings')
-
+const _  = require('lodash')
+/**
+ * [Utils description]
+ * @type {Object}
+ */
 const Utils = {
   primeNumber,
   createRole,
@@ -61,7 +65,12 @@ function createRole (obj, cb) {
     }
   })
 }
-
+/**
+ * [relationMapingRole description]
+ * @param  {[type]}   obj [description]
+ * @param  {Function} cb  [description]
+ * @return {[type]}       [description]
+ */
 function relationMapingRole (obj, cb) {
   let Role = app.models.role
   let Mapping = app.models.RoleMapping
@@ -85,7 +94,12 @@ function relationMapingRole (obj, cb) {
     }
   })
 }
-
+/**
+ * [relationActionsMapingRole description]
+ * @param  {[type]}   obj [description]
+ * @param  {Function} cb  [description]
+ * @return {[type]}       [description]
+ */
 function relationActionsMapingRole (obj, cb) {
   let Role = app.models.role
   let Mapping = app.models.ActionMapping
@@ -109,7 +123,12 @@ function relationActionsMapingRole (obj, cb) {
     }
   })
 }
-
+/**
+ * [createAction description]
+ * @param  {[type]}   obj [description]
+ * @param  {Function} cb  [description]
+ * @return {[type]}       [description]
+ */
 function createAction (obj, cb) {
   console.log('llego hasta aca soy un grande')
   let Actions = app.models.actions
@@ -120,13 +139,42 @@ function createAction (obj, cb) {
     cb(action)
   })
 }
-
-function createPermission(obj, cb) {
+/**
+ * [createPermission description]
+ * @param  {[type]}   userId [description]
+ * @param  {[type]}   obj    [description]
+ * @param  {Function} cb     [description]
+ * @return {[type]}          [description]
+ */
+function createPermission(userId, obj, cb) {
   let Perm = app.models.permissions
-  Perm.upsert(obj, (err, perm) => {
-     console.log(`ERROR ${err} -- ${JSON.stringify(perm)}`)
-    if (err) cb(err, null)
-    cb(null,perm)
+  let aCrear = []
+  Perm.find({where: {userId: userId}}, (err, permis) => {
+    if (err) cb(err)
+    if (permis.length > 0){
+      obj.forEach((val, i) => {
+        let exist = _.findIndex(permis, function(o) { return o.actionId ==  val.actionId})
+        if (exist !== -1) {
+          permis[exist].status = val.status
+          permis[exist].save();
+        } else {
+             aCrear.push(val)
+        }
+      })
+
+    } else {
+         aCrear = _.concat(aCrear,obj);
+    }
+    console.log(`${JSON.stringify(aCrear)}`)
+    if (aCrear.length > 0) {
+       Perm.create(aCrear, (err, perm) => {
+         console.log(`ERROR ${err} -- ${JSON.stringify(perm)}`)
+        if (err) cb(err, null)
+        cb(null, {status: message.statusSussesfull})
+      })
+    } else {
+      cb(null, {status: message.statusSussesfull})
+    }
   })
 }
 

@@ -2,7 +2,10 @@
 const Utils = require('../../utils/utils')
 const app = require('../../server/server')
 module.exports = (User) => {
-
+  /**
+   * [message description]
+   * @type {String}
+   */
   User.validatesUniquenessOf('email', {message: 'This user already exists'})
   User.validatesUniquenessOf('name', {message: 'This user already exists'})
 
@@ -71,7 +74,12 @@ module.exports = (User) => {
 
     })
   })
-
+  /**
+   * [description]
+   * @param  {[type]}   userId [description]
+   * @param  {Function} cb     [description]
+   * @return {[type]}          [description]
+   */
   User.listUsers = (userId, cb) => {
     console.log(`primero aqui`)
     User.find({
@@ -93,61 +101,28 @@ module.exports = (User) => {
     returns: {arg: 'Users', type: 'array'},
     http: {path: '/listUsers', verb: 'post'}
   })
-
+  /**
+   * [description]
+   * @param  {[type]}   user    [description]
+   * @param  {[type]}   actions [description]
+   * @param  {Function} cb      [description]
+   * @return {[type]}           [description]
+   */
   User.managmentPermission = (user,actions, cb) => {
     let perm = app.models.permissions
     let create = []
-    // actions.forEach((val, i) => {
-    //   create.push({
-    //     userId: user.id,
-    //     actionId: val.actionId,
-    //     status: val.status
-    //   })
-    // })
-    //  Utils.createPermission(create,
-    //   (err, res) => {
-    //     console.log(`Erro --- ${JSON.stringify(res)}`)
-    //     if (err) return cb(err)
-    //     return cb(null, { satus: "Succesfull" })
-    //   })
-
-
     actions.forEach((val, i) => {
-      perm.findOne({where: {
-          userId: user.id,
-          actionId: val.actionId
-      }},
-      (err, res) => {
-        if (err) return cb(err)
-        if (res) {
-          res.satus = val.status
-          res.save()
-          response.push(res)
-        } else {
-          Utils.createPermission({
-            userId: user.id,
-            actionId: val.actionId,
-            status: val.status
-          },
-          (err, res) => {
-            console.log(`Erro --- ${i}`)
-            if (err) return cb(err)
-            console.log('Creamos todo voy a continuar OK')
-            response.push(res)
-
-          })
-        }
-
-
-       if( i === actions.length-1){
-
-       }
+      create.push({
+        userId: user.id,
+        actionId: val.id,
+        status: val.status
       })
     })
 
-
-
-
+    Utils.createPermission(user.id, create, (err, req) =>{
+      if (err) cb(err)
+      cb(null, req)
+    })
   }
   User.remoteMethod('managmentPermission', {
     accepts: [{arg: 'user', type: 'Object'},

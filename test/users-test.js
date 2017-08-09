@@ -10,7 +10,12 @@ const listen = require('test-listen') // eslint-disable-line
 const Utils = require('../utils/utils') // eslint-disable-line
 const Promise = require('bluebird')
 let url
-
+/**
+ * [description]
+ * @param  {[type]}   'Start app'          [description]
+ * @param  {Function} async  (t)           [description]
+ * @return {[type]}          [description]
+ */
 test.before('Start app', async (t) => {
   if (!app.status) {
     let srv = app.start()
@@ -29,11 +34,14 @@ test.before('Start app', async (t) => {
     })
   })
 })
-
-// test.beforeEach('instance URL', async (t) => {
-//   t.context.url = await listen(srv)
-// })
-
+/**
+ * [description]
+ * @param  {[type]}   'delete Elements'     [description]
+ * @param  {Function} async   (t)           [description]
+ * @param  {Function} (err)   [description]
+ * @param  {[type]}   (err    [description]
+ * @return {[type]}           [description]
+ */
 test.after('delete Elements', async (t) => {
   let Role = app.models.role
   let RoleMapping = app.models.RoleMapping
@@ -51,6 +59,13 @@ test.after('delete Elements', async (t) => {
     })
   })
 })
+/**
+ * [description]
+ * @param  {[type]}   'delete Users'        [description]
+ * @param  {Function} async   (t)           [description]
+ * @param  {[type]}   (err,   info          [description]
+ * @return {[type]}           [description]
+ */
 test.afterEach('delete Users', async (t) => {
   let User = app.models.user
   // let RoleMapping = app.models.RoleMapping
@@ -80,25 +95,6 @@ test('Create user susseful', async (t) => {
   t.deepEqual(res.body.username, user.username)
 })
 /**
- * Sign UP fail user repeat
- */
-// test('SignUp Client user repeat', async (t) => {
-//   let user = fixtures.getUser()
-//   let options = {
-//     method: 'POST',
-//     url: `${url}/api/users`,
-//     json: true,
-//     body: user,
-//     resolveWithFullResponse: true
-//   }
-//   let res = await request(options)
-//   t.context.idUser = res.body.id
-//   let duplicate = await
-//   t.throw(request(options), /ValidationError/)
-//   t.is(duplicate.statusCode, 422)
-//   t.deepEqual(duplicate.body.error.name, 'ValidationError')
-// })
-/**
  * Sign UP fail role no exist
  */
 test('SignUp Client user Role no exist', async (t) => {
@@ -117,7 +113,6 @@ test('SignUp Client user Role no exist', async (t) => {
   t.is(res.statusCode, 400)
   t.deepEqual(res.body.error.message, 'Error at create relations')
 })
-
 /**
  * Login user
  */
@@ -226,3 +221,5 @@ test('List User', async (t) => {
     t.false(val.id === response.body.id)
   })
 })
+
+test.todo('user managment')

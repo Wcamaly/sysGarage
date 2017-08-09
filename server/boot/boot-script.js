@@ -1,5 +1,5 @@
 /**
- * Create Role and user Base
+ * description
  */
 const Utils = require('../../utils/utils')  // eslint-disable-line
 const request = require('request-promises')  // eslint-disable-line
@@ -31,13 +31,13 @@ module.exports = (app) => {
       username: 'admin',
       email: 'admin@gmail.com',
       password: '1234',
-      usertype: 'admin'
+      userType: 'admin'
     },
     {
       username: 'client',
       email: 'client@gmail.com',
       password: 'client',
-      usertype: 'client'
+      userType: 'client'
     }]
     createUsers.forEach((val, i) => {
       app.models.user.findOne({where: {
@@ -76,9 +76,18 @@ module.exports = (app) => {
       actionName: 'listUsers',
       description: 'Get list User'
     }]
-
+    /**
+     * [ACTIONS description]
+     * @type {String}
+     */
     app.models.ActionMapping.ACTIONS = 'ACTIONS'
-
+    /**
+     * [description]
+     * @param  {[type]}   options.where: {actionName: actions[0].actionName} [description]
+     * @param  {Function} (err,          req)          [description]
+     * @param  {[type]}   (err,          req           [description]
+     * @return {[type]}                  [description]
+     */
     app.models.actions.findOne({where: {actionName: actions[0].actionName}}, (err, req) => {
       if (err) throw err
       if (!req) {

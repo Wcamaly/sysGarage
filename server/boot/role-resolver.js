@@ -1,4 +1,12 @@
+const _  = require('lodash')
+
 module.exports = function(app) {
+  /**
+   * [description]
+   * @param  {[type]} role    [description]
+   * @param  {[type]} context [description]
+   * @return {[type]}         [description]
+   */
   app.on('started', () => {
       let Role = app.models.role;
 
@@ -12,43 +20,37 @@ module.exports = function(app) {
         })
       })
   })
-
-
+  /**
+   * Eval if User have permission
+   * @param  {[String]}   nameRole Name the role
+   * @param  {[Object]}   role     Objet if Role
+   * @param  {[context]}   context  Context this petion
+   * @param  {Function} cb       callback next
+   * @return boolean  validation if have permission
+   */
   function roleReolve (nameRole, role, context, cb) {
     let perm = app.models.permissions
-    // console.log(`Role --- ${context.modelName.toLowerCase()}   ----- ${nameRole.toLowerCase()}`)
-    // if (context.modelName.toLowerCase() !== 'user') {
-    //   console.log('modaleNAme Error')
-    //   return process.nextTick(() => cb(null, false));
-    // }
-
     let userId = context.accessToken.userId;
     if (!userId) {
-      console.log('TOken Error')
-      //A: No, user is NOT logged in: callback with FALSE
       return process.nextTick(() => cb(null, false));
     }
-
     perm.find({
       where: {userId: userId},
-      inlcude: {
+      include: {
         relation: 'actions'
       }
     }, (err, res) => {
-      console.log(`err -- ${err} --res ${JSON.stringify(res)}`)
       if(err) return cb(err)
       if (res.length === 0) {
-        console.log('---------------------')
         return cb(null, true)
       } else {
-        let property = context.property
         let i = 0
-        while (i < res.length) {
-          console.log(`${res[i].actions.actionName}`)
-          if( res[i].actions.actionName === property)
-            return cb(null, res[i].status)
-          i++
-        }
+        let property = context.method.toString()
+        let ind = _.findIndex(res, function(o) {
+          let as = JSON.parse(JSON.stringify(o))
+          return as.actions.actionName ===  property
+        })
+        if (ind !== -1) return cb(null, res[ind].status)
         cb(null, true)
       }
     })
