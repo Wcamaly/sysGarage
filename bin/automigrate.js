@@ -72,4 +72,14 @@ db.automigrate('ActionMapping', (err) => {
   console.log('Congratulations you created table ActionMapping')
   db.disconnect()
 })
+/**
+ * Create Table CreateRolePermissions
+ * @param  String 'CreateRolePermissions' Name for Model
+ * @param  function (err)  callback to promises
+ */
+db.automigrate('CreateRolePermissions', (err) => {
+  if (err) throw new Error(err)
+  console.log('Congratulations you created table ActionMapping')
+  db.disconnect()
+})
 

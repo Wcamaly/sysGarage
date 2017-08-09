@@ -10,7 +10,6 @@ module.exports = function(app) {
   app.on('started', () => {
       let Role = app.models.role;
 
-
       Role.find({}, (err, roles) => {
         if (err) throw err
         roles.forEach((val, i) => {
@@ -30,7 +29,7 @@ module.exports = function(app) {
    */
   function roleReolve (nameRole, role, context, cb) {
     let perm = app.models.permissions
-    let userId = context.accessToken.userId;
+    let userId = context.accessToken.userId
     if (!userId) {
       return process.nextTick(() => cb(null, false));
     }

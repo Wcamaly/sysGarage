@@ -14,7 +14,8 @@ const Utils = {
   relationMapingRole,
   createAction,
   createPermission,
-  relationActionsMapingRole
+  relationActionsMapingRole,
+  asignRolePermCreate
 }
 /**
  * primeNumber  Calculator is prime num
@@ -46,20 +47,38 @@ function primeNumber (num) {
  */
 function createRole (obj, cb) {
   let Role = app.models.role
+  let respon = []
+  let crear = []
+  Role.find({}, (err, req) => {
+    if (err) throw err
+    if (req.length > 0) {
+      obj.forEach((val, i) => {
+        let exist = _.findIndex(req, function(o) { return o.name ==  val.name})
+        if (exist !== -1) {
+          respon.push(req[exist])
+        } else {
+          crear.push(val)
+        }
+      })
+    } else {
+      crear = _.concat(crear, obj)
+    }
+    Role.create(crear, (err, roles) => {
+      if (err) throw err
+      cb(null, _.concat(respon, roles))
+    })
+  })
+
+
+
+
+
   Role.find({where: {name: obj.name}}, (err, data) => {
     if (err) {
       throw err
     }
     if (data.length === 0) {
-      Role.create([{
-        name: obj.name,
-        description: obj.description
-      }], (err, role) => {
-        if (err) {
-          throw err
-        }
-        cb(role[0])
-      })
+
     } else {
       cb(data[0])
     }
@@ -161,14 +180,12 @@ function createPermission(userId, obj, cb) {
              aCrear.push(val)
         }
       })
-
     } else {
          aCrear = _.concat(aCrear,obj);
     }
     console.log(`${JSON.stringify(aCrear)}`)
     if (aCrear.length > 0) {
        Perm.create(aCrear, (err, perm) => {
-         console.log(`ERROR ${err} -- ${JSON.stringify(perm)}`)
         if (err) cb(err, null)
         cb(null, {status: message.statusSussesfull})
       })
@@ -177,5 +194,26 @@ function createPermission(userId, obj, cb) {
     }
   })
 }
+function asignRolePermCreate (listperm, cb) {
+  let croleperm = app.models.CreateRolePermissions
 
+  listperm.listIds.forEach((val, i, arr) => {
+    croleperm.findOne({
+      roleId: listperm.roleId,
+      createRoleId: val
+    }, (err, req) => {
+      if (err) throw err
+      if (!req) {
+        croleperm.create({
+          roleId: listperm.roleId,
+          createRoleId: val
+        }, (err, res) => {
+          if (err) throw err
+        })
+      }
+    })
+  })
+  cb()
+
+}
 module.exports = Utils

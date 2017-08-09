@@ -5,16 +5,16 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "permissions": {
-      "type": "belongsTo",
-      "model": "permissions",
-      "foreignKey": ""
-    },
     "role": {
       "type": "hasMany",
       "model": "role",
       "foreignKey": "principalId",
       "through": "RoleMapping"
+    },
+    "permission": {
+      "type": "hasMany",
+      "model": "permissions",
+      "foreignKey": "userId"
     }
   },
   "acls": [

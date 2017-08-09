@@ -3,6 +3,7 @@
  */
 const Utils = require('../../utils/utils')  // eslint-disable-line
 const request = require('request-promises')  // eslint-disable-line
+const _  = require('lodash')
 module.exports = (app) => {
   app.on('started', () => {
 
@@ -16,47 +17,78 @@ module.exports = (app) => {
       name: 'admin',
       description: 'Is Role for admin'
     }]
-    croles.forEach((val, i) => {
-      if (typeof Utils.createRole === 'function') {
-        Utils.createRole(val, (req) => {
-          console.log(`Se creo el Role ${req.name}`)
-        })
-      }
-    })
 
+    if (typeof Utils.createRole === 'function') {
+      Utils.createRole(croles, (err, roles) => {
+
+        createUsers()
+        createRolesPermission(roles)
+
+      })
+    }
+    /**
+     * We assign that role you can create users with whom you role
+     * @message congratulation
+     */
+    function createRolesPermission (roles) {
+
+        let asignRolePermitionCreate = [{
+          role: 'admin',
+          crole: ['admin']
+        }]
+        _.forEach(roles, (val, i) => {
+          let ind = _.findIndex(asignRolePermitionCreate, function(o) { return o.role ===  val.name})
+          if (ind !== -1 ) {
+            let listId = []
+            asignRolePermitionCreate[ind].crole.forEach((val, i) => {
+              let index = _.findIndex(roles, function(o) { return o.name ==  val})
+              listId.push(roles[index].id)
+            })
+            Utils.asignRolePermCreate({
+              roleId: val.id,
+              listIds: listId
+            }, (err, res) => {
+              if (err) throw err
+              console.log(`Congratulations to created role assignment you can create user with role`)
+            })
+          }
+        })
+    }
     /**
      * Create User Admin
      */
-    let createUsers = [{
-      username: 'admin',
-      email: 'admin@gmail.com',
-      password: '1234',
-      userType: 'admin'
-    },
-    {
-      username: 'client',
-      email: 'client@gmail.com',
-      password: 'client',
-      userType: 'client'
-    }]
-    createUsers.forEach((val, i) => {
-      app.models.user.findOne({where: {
-        username: val.username
-      }}, (err, req) => {
-        if (err) throw err
-        console.log(`URL ${app.get('url')}`)
-        if (!req) {
-          let options = {
-            method: 'POST',
-            url: `${app.get('url')}api/users/`,
-            json: true,
-            body: val
-          }
-          request(options)
-        }
-      })
-    })
+    function createUsers () {
 
+      let createUsers = [{
+        username: 'admin',
+        email: 'admin@gmail.com',
+        password: '1234',
+        userType: 'admin'
+      },
+      {
+        username: 'client',
+        email: 'client@gmail.com',
+        password: 'client',
+        userType: 'client'
+      }]
+      createUsers.forEach((val, i) => {
+        app.models.user.findOne({where: {
+          username: val.username
+        }}, (err, req) => {
+          if (err) throw err
+          console.log(`URL ${app.get('url')}`)
+          if (!req) {
+            let options = {
+              method: 'POST',
+              url: `${app.get('url')}api/users/`,
+              json: true,
+              body: val
+            }
+            request(options)
+          }
+        })
+      })
+    }
     /**
      * Action Defaults
      */

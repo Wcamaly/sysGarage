@@ -59,5 +59,9 @@
   "ActionMapping": {
     "dataSource": "mysqlDb",
     "public": false
+  },
+  "CreateRolePermissions": {
+    "dataSource": "mysqlDb",
+    "public": false
   }
 }

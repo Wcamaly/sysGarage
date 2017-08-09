@@ -1,0 +1,31 @@
+{
+  "name": "CreateRolePermissions",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "roleId": {
+      "type": "number"
+    },
+    "createRoleId": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "role": {
+      "type": "belongsTo",
+      "model": "role",
+      "foreignKey": "roleId"
+    },
+    "createRole": {
+      "type": "belongsTo",
+      "model": "role",
+      "foreignKey": "createRoleId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

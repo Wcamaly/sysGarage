@@ -12,7 +12,7 @@
     },
     "actionId": {
       "type": "number",
-      "required": true
+      "required": false
     },
     "status": {
       "type": "boolean",
@@ -26,6 +26,11 @@
       "type": "belongsTo",
       "model": "actions",
       "foreignKey": "actionId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
     }
   },
   "acls": [],

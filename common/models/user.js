@@ -1,6 +1,7 @@
 'use strict'
 const Utils = require('../../utils/utils')
 const app = require('../../server/server')
+const _  = require('lodash')
 module.exports = (User) => {
   /**
    * [message description]
@@ -8,6 +9,64 @@ module.exports = (User) => {
    */
   User.validatesUniquenessOf('email', {message: 'This user already exists'})
   User.validatesUniquenessOf('name', {message: 'This user already exists'})
+
+  User.beforeRemote( 'create', function( context, user, next) {
+    let typeUserCreate = String(context.args.data.userType).toLowerCase()
+    let userId = context.req.accessToken ? context.req.accessToken.userId : null
+    let perRoleCre = app.models.CreateRolePermissions
+
+    // Define is posible Error
+    let error = new Error()
+    error.status = 401
+    error.message = 'Authorization Required'
+    error.code = 'AUTHORIZATION_REQUIRED'
+
+    perRoleCre.find({
+      include: [{
+        relation:'role',
+        scope:{
+          fields: ['name','id']
+        }
+      },{
+        relation:'createRole',
+        scope:{
+          where: {name: typeUserCreate},
+          fields: ['name','id']
+        }
+      }]
+    }, (err, res) => {
+
+      try {
+        if (err) throw err
+        console.log(`first if ${res.createRole && userId}`)
+      console.log(`!userId}`)
+
+        if (res.createRole && userId) {
+          User.findById(userId,{
+            fields: {'username': false, 'email': false, 'id': true},
+            include: {
+              relation: 'role',
+              fields: {'id': true, 'name': true, 'description': false, 'created': false, 'modified': false},
+            }
+          }, (err, res) => {
+            if (err) throw err
+            let roleId = res.role[0].id  // Is thought for if a user has more than one role but as is not the example is placed 0
+            let auths = []
+            auths =  _.find(res, (o) => { return o.role.id === roleId})
+            if (auths.length > 0) {
+             return next()
+            } else throw error
+          })
+        } else if (res.createRole) throw error
+
+        next()
+      } catch (e) {
+        console.log(e.message)
+        next(e)
+      }
+    })
+  })
+
 
  /**
    * Redefine login
@@ -51,17 +110,27 @@ module.exports = (User) => {
    * @return Object   user     user is session
    */
   User.afterRemote('login', (context, next) => {
+    console.log('After Login')
     let RoleMapping = app.models.RoleMapping
     let Role = app.models.role
     let accesToken = context.result.id
     context.res.setAccesToken(accesToken)
-    console.log('user remote logi')
 
     User.findById(context.result.userId,{
       fields: {'username': true, 'email': true, 'id': true},
-      include: {
-        relation: 'role'
-      }
+      include: [{
+          relation: 'role',
+          scope: {
+            fields: ['id', 'name', 'description']
+          }
+        },
+        {
+          relation: 'permission',
+          scope: {
+            fileds: ['actionId', 'status']
+          }
+        }
+      ]
     }, (err, res) => {
       try {
         console.log(`${err}`)
@@ -81,16 +150,22 @@ module.exports = (User) => {
    * @return {[type]}          [description]
    */
   User.listUsers = (userId, cb) => {
-    console.log(`primero aqui`)
     User.find({
       where: {id: {nin: [userId]}},
       fields: {'username': true, 'email': true, 'id': true},
-      include: {
-        relation: 'role', // include the owner object
-        scope: { // further filter the owner object
-          fields: {'name': true} // only show two fields
+      include: [{
+          relation: 'role',
+          scope: {
+            fields: ['id', 'name', 'description']
+          }
+        },
+        {
+          relation: 'permission',
+          scope: {
+            fileds: ['actionId', 'status']
+          }
         }
-      }
+      ]
     }, (err, req) => {
       if (err) throw err
       cb(null, req)
@@ -130,5 +205,4 @@ module.exports = (User) => {
     returns: {arg: 'data', type: 'Object'},
     http: {path: '/managmentPermission', verb: 'post'}
   })
-
 }
