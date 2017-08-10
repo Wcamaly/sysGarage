@@ -7,10 +7,10 @@
     LOGOUT: '/api/users/logout',
 
     CREATE: '/api/users/',
-    LISTUSER: '/api/users/listUser',
+    LISTUSER: '/api/users/listUsers',
     MPERMISSION: '/api/users/managmentPermission',
 
-    CALCUPRIME: '/api/users/calcPrime',
+    CALCUPRIME: '/api/PrimeNumbers/calcPrime',
     DEFAULTPERM: '/getDefaultRoleActions'
   })
 

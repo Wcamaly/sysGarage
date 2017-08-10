@@ -10,7 +10,12 @@ module.exports = (server) => {
   let router = server.loopback.Router()
   // router.get('/', server.loopback.status());
   router.post('/getDefaultRoleActions', (req, res, next) => {
-    Role.find({include: {relation: 'actions'}}, (err, response) => {
+    let role = req.body.role
+    Role.find({
+      where: {name : role},
+      fields: {name: true, id: true, modified: false, created:false, description:false},
+      include: {relation: 'actions'}
+    }, (err, response) => {
       if (err) next(err)
       res.status(200).json(response)
     })

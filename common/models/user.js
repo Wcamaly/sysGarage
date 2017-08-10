@@ -125,7 +125,7 @@ module.exports = (User) => {
     context.res.setAccesToken(accesToken)
 
     User.findById(context.result.userId, {
-      fields: {'username': true, 'email': true, 'id': true},
+      fields: {'username': true, 'email': false, 'id': true},
       include: [{
         relation: 'role',
         scope: {
@@ -179,7 +179,7 @@ module.exports = (User) => {
   }
   User.remoteMethod('listUsers', {
     accepts: {arg: 'userId', type: 'number'},
-    returns: {arg: 'Users', type: 'array'},
+    returns: {arg: 'Users', type: 'array', root:true},
     http: {path: '/listUsers', verb: 'post'}
   })
   /**
@@ -207,7 +207,9 @@ module.exports = (User) => {
   User.remoteMethod('managmentPermission', {
     accepts: [{arg: 'user', type: 'Object'},
               {arg: 'actions', type: 'Object'}],
-    returns: {arg: 'data', type: 'Object'},
+    returns: {arg: 'data', type: 'Object', root: true},
     http: {path: '/managmentPermission', verb: 'post'}
   })
+
+
 }

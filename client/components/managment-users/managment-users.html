@@ -1,0 +1,14 @@
+<ul ng-cloak>
+	<li ng-repeat="user in listUser" ng-click="goToPerson(user.username, $event)" >
+		<md-content layout="row">
+			<div layout="row" flex="90">
+				<img  ng-src="/assets/icon-profile.png" class="app-avatar" />
+		    	<p >{{ user.username }} -- {{user.role[0].name}}</p>
+			</div>
+			<md-button class="md-icon-button launch" flex="10"  ng-click="show($index)">
+		        <md-icon class="material-icons">arrow_drop_down_circle</md-icon>
+		    </md-button>
+		</md-content>
+		<app-action user="user" ng-if="view($index)"></app-action>
+	</li>
+</ul>

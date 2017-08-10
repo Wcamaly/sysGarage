@@ -1,14 +1,13 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute'])
+angular.module('directive.blocked', [])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view1', {
-    templateUrl: 'view1/view1.html',
-    controller: 'View1Ctrl'
-  });
-}])
+.directive('appBlocked', [function() {
+     return {
+    restict: 'E',
+    urlTemplate: './blocked.html',
+    controller: ['$scope','$queryServer',function ($scope, $queryServer) {
 
-.controller('View1Ctrl', [function() {
-
+      }]
+    }
 }]);

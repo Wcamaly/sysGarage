@@ -39,7 +39,7 @@
         managmentPermission: function (obj) {
           return requestServer(SERVER.MPERMISSION, obj);
         },
-        getDefaultPermissions: function () {
+        getDefaultPermissions: function (obj) {
           return requestServer(SERVER.DEFAULTPERM, obj);
         },
         calculatorPrime(obj) {

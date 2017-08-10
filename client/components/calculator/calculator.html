@@ -1,0 +1,29 @@
+<md-content layout="row" class="heigth" layout-align="center center">
+	<form name="calcu">
+		<md-input-container class="md-icon-float md-block" ng-if="!activated && !resultView">
+	      	  <div layout="row">
+		      	  <div>
+		      	  	<label>Number</label>
+			      	<input ng-model="$parent.cal.number" name="prime" type="number" required="">
+		      	  </div>
+			      <md-button class="md-fab md-primary" ng-click="calculator()">
+					<img src="./assets/icon-cal.png" class="calculator">
+			      </md-button>
+	      	  </div>
+
+
+		      <div ng-messages="calcu.prime.$error">
+	            <div ng-message="required">This is required.</div>
+	          </div>
+		</md-input-container>
+
+	</form>
+	<div layout="row" layout-sm="column" layout-align="space-around" ng-if="activated">
+        <md-progress-circular  class="md-accent" md-diameter="40"></md-progress-circular>
+    </div>
+	<md-content ng-if="resultView" layout="column" layout-align="center center">
+	    <p ng-if="result">You Number is Prime</p>
+	    <p ng-if="!result">You Number is not Prime</p>
+	    <md-button class="md-raised md-primary" aria-label="try again" ng-click="again()">Trye again!</md-button>
+	</md-content>
+</md-content>

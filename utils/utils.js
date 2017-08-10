@@ -169,14 +169,19 @@ function createPermission (userId, obj, cb) {
     } else {
       aCrear = _.concat(aCrear, obj)
     }
-    console.log(`${JSON.stringify(aCrear)}`)
     if (aCrear.length > 0) {
       Perm.create(aCrear, (err, perm) => {
         if (err) cb(err, null)
-        cb(null, {status: message.statusSussesfull})
+        cb(null, {
+          status: 'Ok',
+          message: message.statusSussesfull
+        })
       })
     } else {
-      cb(null, {status: message.statusSussesfull})
+      cb(null, {
+          status: 'Ok',
+          message: message.statusSussesfull
+        })
     }
   })
 }

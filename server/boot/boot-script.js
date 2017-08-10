@@ -12,6 +12,7 @@ module.exports = (app) => {
      * @message congratulation
      */
     function createRolesPermission (roles) {
+      console.log('Roles relation')
       let asignRolePermitionCreate = defaults.asignRolePermitionCreateDefault
       _.forEach(roles, (val, i) => {
         let ind = _.findIndex(asignRolePermitionCreate, (o) => { return o.role === val.name })

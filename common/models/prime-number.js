@@ -8,19 +8,28 @@ module.exports = (Primenumber) => {
    * @return Number  num   same number
    * @return boolean  prime response a question it number is prime ?
    */
-  Primenumber.calcPrime = (num, cb) => {
+  Primenumber.calcPrime = (number, cb) => {
     let obj = {
-      num: num,
-      prime: Utils.primeNumber(num)
+      number: number,
+      prime: Utils.primeNumber(number)
     }
     cb(null, obj)
   }
   Primenumber.remoteMethod('calcPrime', {
-    accepts: {arg: 'num', type: 'number'},
+    accepts: {arg: 'number', type: 'number'},
     returns: [
-      {arg: 'num', type: 'number'},
-      {arg: 'prime', type: 'boolean'}
+      {arg: 'number', type: 'number', root: true},
+      {arg: 'prime', type: 'boolean', root: true}
     ],
     http: {path: '/calcPrime', verb: 'post'}
   })
+
+  Primenumber.afterRemote('**', (ctx, prime, next) => {
+    ctx.result = {
+      data: ctx.result
+    }
+    next()
+  })
+
+
 }

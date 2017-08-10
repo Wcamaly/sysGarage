@@ -3,16 +3,21 @@
     var accesToken= null
     function setAccesToken (data) {
       var auth = data.headers('X-Access-Token')
-      console.log(auth)
-      var i = auth.indexOf(':') + 1
-      accesToken = auth.substr(i, auth.length)
+      if (auth){
+        var i = auth.indexOf(':') + 2
+        accesToken = auth.substr(i, auth.length)
+      }
     }
     function generatedUrl (url) {
       return accesToken ? url+'?access_token='+accesToken : url;
     }
+    function clear () {
+      accesToken = null
+    }
     return {
       setAccesToken: setAccesToken,
-      generatedUrl: generatedUrl
+      generatedUrl: generatedUrl,
+      clear : clear
     }
 
   }])

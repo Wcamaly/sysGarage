@@ -1,0 +1,23 @@
+<div  ng-cloak>
+  <md-content>
+    <md-toolbar class="md-hue-2">
+      <div class="md-toolbar-tools">
+
+       <md-icon md-font-icon="material-icons" >people</md-icon>
+
+        <h2 flex >Welcome to {{username}}</h2>
+
+        <md-button class="md-icon-button" aria-label="Favorite" ng-click="logout()">
+          <md-icon class="material-icons" >power_settings_new</md-icon>
+          <span>Logout</span>
+        </md-button>
+
+
+      </div>
+    </md-toolbar>
+  </md-content>
+  <md-content ng-include="urlTemplate" class="conten-include">
+  </md-content>
+</div>
+
+

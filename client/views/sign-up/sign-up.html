@@ -1,0 +1,47 @@
+<section class="login">
+  <form action="" name= "sign">
+    <md-content   layout="column" layout-align="center center">
+      <h1>Sign Up</h1>
+      <div layout="column" class="box-border" layout-align="center center">
+        <md-input-container>
+          <label>User name</label>
+          <input ng-model="user.username" name="username" type="text" required="" >
+          <div ng-messages="sign.username.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+        <md-input-container>
+          <label>Email</label>
+          <input ng-model="user.email" name="email" type="email" required="" ng-pattern="patronEmail">
+          <div ng-messages="sign.email.$error">
+            <div ng-message="required">This is required.</div>
+            <div ng-message="pattern">Email Invalid.</div>
+          </div>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Passwor</label>
+          <input ng-model="user.password" name="pass" type="password" required="">
+          <div ng-messages="sign.pass.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+        <md-input-container flex="50">
+          <label>Role</label>
+          <md-select name="favoriteColor" ng-model="user.userType" required>
+            <md-option value="client">Client</md-option>
+            <md-option value="admin" ng-disabled="!validation">Admin</md-option>
+
+          </md-select>
+          <div class="errors" ng-messages="myForm.favoriteColor.$error">
+            <div ng-message="required">Required</div>
+          </div>
+        </md-input-container>
+        <md-input-container>
+          <md-button ng-click="signUp()" class="md-raised md-primary">Sign Up</md-button>
+        </md-input-container>
+      </div>
+
+  </md-content>
+  </form>
+</section>

@@ -1,0 +1,16 @@
+<md-content class="actions" layout-padding layout-wrap>
+	<input type="hidden" class="none" ng-init="perm.actions= []" />
+	<md-list ng-cloak>
+	  <md-list-item ng-repeat="permisos in user.permission" >
+
+	    <input type="hidden" class="none" ng-init="perm.actions[$index].id = permisos.id" />
+	    <input type="hidden" class="none" ng-init="perm.actions[$index].actionName= permisos.actionName" />
+	    <p> {{permisos.description}} </p>
+	    <md-switch class="md-secondary md-primary" ng-model="perm.actions[$index].satus" ng-init="perm.actions[$index].satus || 1"></md-switch>
+	  </md-list-item>
+	</md-list>
+	<md-content layout="row" layout-align="end end">
+	   <md-button class="md-raised md-primary" ng-click="configPerm()">content</md-button>
+	</md-content>
+
+</md-content>
