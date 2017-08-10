@@ -1,0 +1,29 @@
+<section class="login">
+  <form action="" name= "login">
+    <md-content md-theme="docs-dark"  layout="column" layout-align="center center">
+      <div class="logo"><img ng-src="../../assets/sysgarage.png" /></div>
+      <div layout="column" class="box-border" layout-align="center center">
+        <md-input-container>
+          <label>Email</label>
+          <input ng-model="user.email" name="email" type="email" required="" ng-pattern="patronEmail">
+          <div ng-messages="login.email.$error">
+            <div ng-message="required">This is required.</div>
+            <div ng-message="pattern">Email Invalid.</div>
+          </div>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Passwor</label>
+          <input ng-model="user.password" name="pass" type="password" required="">
+          <div ng-messages="login.pass.$error">
+            <div ng-message="required">This is required.</div>
+          </div>
+        </md-input-container>
+        <md-input-container>
+          <md-button ng-click="runLogin()" class="md-raised md-primary">Login</md-button>
+        </md-input-container>
+      </div>
+
+  </md-content>
+  </form>
+</section>

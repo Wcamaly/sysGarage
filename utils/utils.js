@@ -3,7 +3,7 @@
  */
 const app = require('../server/server')
 const message = require('../const/strings')
-const _  = require('lodash')
+const _ = require('lodash')
 /**
  * [Utils description]
  * @type {Object}
@@ -53,7 +53,7 @@ function createRole (obj, cb) {
     if (err) throw err
     if (req.length > 0) {
       obj.forEach((val, i) => {
-        let exist = _.findIndex(req, function(o) { return o.name ==  val.name})
+        let exist = _.findIndex(req, (o) => { return o.name === val.name })
         if (exist !== -1) {
           respon.push(req[exist])
         } else {
@@ -68,27 +68,11 @@ function createRole (obj, cb) {
       cb(null, _.concat(respon, roles))
     })
   })
-
-
-
-
-
-  Role.find({where: {name: obj.name}}, (err, data) => {
-    if (err) {
-      throw err
-    }
-    if (data.length === 0) {
-
-    } else {
-      cb(data[0])
-    }
-  })
 }
 /**
- * [relationMapingRole description]
- * @param  {[type]}   obj [description]
- * @param  {Function} cb  [description]
- * @return {[type]}       [description]
+ * [relationMapingRole Carry out the mapping of the user with the corresponding paper]
+ * @param  {Object}   obj One Objen with mapping
+ * @param  {Function} cb  [callback finished created]
  */
 function relationMapingRole (obj, cb) {
   let Role = app.models.role
@@ -100,7 +84,6 @@ function relationMapingRole (obj, cb) {
     }
   }, (err, role) => {
     if (err || role === null) {
-
       return cb(message.errorCreateRoleMapping, null)
     } else {
       role.principals.create({
@@ -114,10 +97,14 @@ function relationMapingRole (obj, cb) {
   })
 }
 /**
- * [relationActionsMapingRole description]
- * @param  {[type]}   obj [description]
- * @param  {Function} cb  [description]
- * @return {[type]}       [description]
+ * [relationActionsMapingRole Create the relation of what actions can make a role]
+ * @param  {Object}   obj Element to relation
+ *                  @EJEM {
+ *                   name: 'admin',
+ *                    principalId: 1
+ *                  }
+ * @param  {Function} cb  callback ejecute
+ * @return {[type]}       MApping raltions
  */
 function relationActionsMapingRole (obj, cb) {
   let Role = app.models.role
@@ -153,7 +140,6 @@ function createAction (obj, cb) {
   let Actions = app.models.actions
 
   Actions.create(obj, (err, action) => {
-
     if (err) throw err
     cb(action)
   })
@@ -165,27 +151,27 @@ function createAction (obj, cb) {
  * @param  {Function} cb     [description]
  * @return {[type]}          [description]
  */
-function createPermission(userId, obj, cb) {
+function createPermission (userId, obj, cb) {
   let Perm = app.models.permissions
-  let aCrear = []
+  let aCrear = [ ]
   Perm.find({where: {userId: userId}}, (err, permis) => {
     if (err) cb(err)
-    if (permis.length > 0){
+    if (permis.length > 0) {
       obj.forEach((val, i) => {
-        let exist = _.findIndex(permis, function(o) { return o.actionId ==  val.actionId})
+        let exist = _.findIndex(permis, (o) => { return o.actionId === val.actionId })
         if (exist !== -1) {
           permis[exist].status = val.status
-          permis[exist].save();
+          permis[exist].save()
         } else {
-             aCrear.push(val)
+          aCrear.push(val)
         }
       })
     } else {
-         aCrear = _.concat(aCrear,obj);
+      aCrear = _.concat(aCrear, obj)
     }
     console.log(`${JSON.stringify(aCrear)}`)
     if (aCrear.length > 0) {
-       Perm.create(aCrear, (err, perm) => {
+      Perm.create(aCrear, (err, perm) => {
         if (err) cb(err, null)
         cb(null, {status: message.statusSussesfull})
       })
@@ -194,6 +180,16 @@ function createPermission(userId, obj, cb) {
     }
   })
 }
+/**
+ * [asignRolePermCreate Create the relationship of which role can create user with a specific role]
+ * @param  {Object}   obj Element to relation
+ *                  @EJEM {
+ *                    'admin': ['create', 'managmentPermission', 'listUsers'],
+ *                    'client': ['calcPrime']
+ *                    }
+ * @param  {Function} cb  callback ejecute
+ * @return {[type]}       MApping raltions
+ */
 function asignRolePermCreate (listperm, cb) {
   let croleperm = app.models.CreateRolePermissions
 
@@ -214,6 +210,5 @@ function asignRolePermCreate (listperm, cb) {
     })
   })
   cb()
-
 }
 module.exports = Utils

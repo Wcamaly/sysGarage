@@ -11,7 +11,6 @@ const db = app.dataSources.mysqlDb
 
 // List to Models
 
-
 /**
  * Create Table Role Mapping
  * @param  String 'RoleMapping' Name for Model
@@ -82,4 +81,3 @@ db.automigrate('CreateRolePermissions', (err) => {
   console.log('Congratulations you created table ActionMapping')
   db.disconnect()
 })
-

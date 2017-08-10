@@ -9,10 +9,13 @@
     "mysql": "node bin/automigrate",
     "lint": "standard",
     "start": "node .",
-    "test": "npm run lint && ava --serial test/**-test.js"
+    "test": "npm run lint && ava --serial --tap test/**-test.js"
   },
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "ignore": [
+        "/client/"
+       ]
   },
   "dependencies": {
     "bluebird": "^3.5.0",

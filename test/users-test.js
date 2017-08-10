@@ -27,7 +27,7 @@ test.before('Start app', async (t) => {
     url = await listen(srv)
   }
 
-  let role = fixtures.getRole()
+  let role = [fixtures.getRole()]
   await new Promise((resolve) => {
     Utils.createRole(role, (req) => {
       resolve(req)
@@ -117,6 +117,7 @@ test('SignUp Client user Role no exist', async (t) => {
  * Login user
  */
 test('Login User', async (t) => {
+  console.log('login USer')
   let user = fixtures.getUser()
   let options = {
     method: 'POST',
@@ -178,7 +179,6 @@ test('Login User error credential', async (t) => {
  */
 test('List User', async (t) => {
   let user = fixtures.getUser()
-  user.userType = 'admin'
   let options = {
     method: 'POST',
     url: `${url}/api/users`,
@@ -205,6 +205,8 @@ test('List User', async (t) => {
 
   let i = auth.indexOf(':') + 1
   let accessToken = auth.substr(i, auth.length).replace(/ /g, '')
+
+  console.log(`accessToken --- ${accessToken}`)
   let optionsListUser = {
     method: 'POST',
     url: `${url}/api/users/listUsers?access_token=${accessToken}`,

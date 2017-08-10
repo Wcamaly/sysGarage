@@ -3,74 +3,39 @@
  */
 const Utils = require('../../utils/utils')  // eslint-disable-line
 const request = require('request-promises')  // eslint-disable-line
-const _  = require('lodash')
+const _ = require('lodash')
+const defaults = require('../../const/defaults')
 module.exports = (app) => {
   app.on('started', () => {
-
-    /**
-     * Create Roles Admin
-     */
-    let croles = [{
-      name: 'client',
-      description: 'Is Role for client'
-    }, {
-      name: 'admin',
-      description: 'Is Role for admin'
-    }]
-
-    if (typeof Utils.createRole === 'function') {
-      Utils.createRole(croles, (err, roles) => {
-
-        createUsers()
-        createRolesPermission(roles)
-
-      })
-    }
     /**
      * We assign that role you can create users with whom you role
      * @message congratulation
      */
     function createRolesPermission (roles) {
-
-        let asignRolePermitionCreate = [{
-          role: 'admin',
-          crole: ['admin']
-        }]
-        _.forEach(roles, (val, i) => {
-          let ind = _.findIndex(asignRolePermitionCreate, function(o) { return o.role ===  val.name})
-          if (ind !== -1 ) {
-            let listId = []
-            asignRolePermitionCreate[ind].crole.forEach((val, i) => {
-              let index = _.findIndex(roles, function(o) { return o.name ==  val})
-              listId.push(roles[index].id)
-            })
-            Utils.asignRolePermCreate({
-              roleId: val.id,
-              listIds: listId
-            }, (err, res) => {
-              if (err) throw err
-              console.log(`Congratulations to created role assignment you can create user with role`)
-            })
-          }
-        })
+      let asignRolePermitionCreate = defaults.asignRolePermitionCreateDefault
+      _.forEach(roles, (val, i) => {
+        let ind = _.findIndex(asignRolePermitionCreate, (o) => { return o.role === val.name })
+        if (ind !== -1) {
+          let listId = []
+          asignRolePermitionCreate[ind].crole.forEach((val, i) => {
+            let index = _.findIndex(roles, (o) => { return o.name === val })
+            listId.push(roles[index].id)
+          })
+          Utils.asignRolePermCreate({
+            roleId: val.id,
+            listIds: listId
+          }, (err, res) => {
+            if (err) throw err
+            console.log(`Congratulations to created role assignment you can create user with role`)
+          })
+        }
+      })
     }
     /**
      * Create User Admin
      */
-    function createUsers () {
-
-      let createUsers = [{
-        username: 'admin',
-        email: 'admin@gmail.com',
-        password: '1234',
-        userType: 'admin'
-      },
-      {
-        username: 'client',
-        email: 'client@gmail.com',
-        password: 'client',
-        userType: 'client'
-      }]
+    function createUsers (cb, cbParam) {
+      let createUsers = defaults.userDefault
       createUsers.forEach((val, i) => {
         app.models.user.findOne({where: {
           username: val.username
@@ -84,30 +49,29 @@ module.exports = (app) => {
               json: true,
               body: val
             }
-            request(options)
+            request(options).then(() => {
+              cb(cbParam)
+            })
           }
         })
       })
     }
     /**
+     * Create Roles Admin
+     */
+    let croles = defaults.rolesDefault
+
+    if (typeof Utils.createRole === 'function') {
+      Utils.createRole(croles, (err, roles) => {
+        if (err) throw err
+        createUsers(createRolesPermission, roles)
+      })
+    }
+
+    /**
      * Action Defaults
      */
-    let actions = [{
-      actionName: 'create',
-      description: 'Create User Admin'
-    },
-    {
-      actionName: 'calcPrime',
-      description: 'Calculater if number is prime'
-    },
-    {
-      actionName: 'managmentPermission',
-      description: 'Managment permissions'
-    },
-    {
-      actionName: 'listUsers',
-      description: 'Get list User'
-    }]
+    let actions = defaults.actionsDefault
     /**
      * [ACTIONS description]
      * @type {String}
@@ -127,10 +91,7 @@ module.exports = (app) => {
           /**
            * Create Action Relation Role
            */
-          let actionsRole  = {
-            'admin': ['create', 'managmentPermission', 'listUsers'],
-            'client': ['calcPrime']
-          }
+          let actionsRole = defaults.actionsRoleDefault
           req.forEach((val, i) => {
             if (actionsRole.admin.indexOf(val.actionName) > -1) {
               Utils.relationActionsMapingRole({
@@ -154,9 +115,5 @@ module.exports = (app) => {
         })
       }
     })
-
-
-
-
   })
 }

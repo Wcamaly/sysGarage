@@ -1,5 +1,4 @@
-'use strict';
+'use strict'
 
-module.exports = function(CreateRolePermissions) {
-
-};
+module.exports = (CreateRolePermissions) => {
+}

@@ -1,6 +1,7 @@
-const _  = require('lodash')
+const _ = require('lodash')
+const message = require('../../const/strings')
 
-module.exports = function(app) {
+module.exports = (app) => {
   /**
    * [description]
    * @param  {[type]} role    [description]
@@ -8,16 +9,15 @@ module.exports = function(app) {
    * @return {[type]}         [description]
    */
   app.on('started', () => {
-      let Role = app.models.role;
-
-      Role.find({}, (err, roles) => {
-        if (err) throw err
-        roles.forEach((val, i) => {
-          Role.registerResolver(val.name, function(role, context, cb) {
-            roleReolve(val.name, role, context, cb)
-          })
+    let Role = app.models.role
+    Role.find({}, (err, roles) => {
+      if (err) throw err
+      roles.forEach((val, i) => {
+        Role.registerResolver(val.name, (role, context, cb) => {
+          roleReolve(val.name, role, context, cb)
         })
       })
+    })
   })
   /**
    * Eval if User have permission
@@ -30,8 +30,14 @@ module.exports = function(app) {
   function roleReolve (nameRole, role, context, cb) {
     let perm = app.models.permissions
     let userId = context.accessToken.userId
+    // We defined possible error
+    let error = new Error()
+    error.status = 401
+    error.message = message.erroBlockedUser
+    error.code = message.erroAuth
+
     if (!userId) {
-      return process.nextTick(() => cb(null, false));
+      return process.nextTick(() => cb(null, false))
     }
     perm.find({
       where: {userId: userId},
@@ -39,17 +45,16 @@ module.exports = function(app) {
         relation: 'actions'
       }
     }, (err, res) => {
-      if(err) return cb(err)
+      if (err) return cb(err)
       if (res.length === 0) {
         return cb(null, true)
       } else {
-        let i = 0
         let property = context.method.toString()
-        let ind = _.findIndex(res, function(o) {
+        let ind = _.findIndex(res, (o) => {
           let as = JSON.parse(JSON.stringify(o))
-          return as.actions.actionName ===  property
+          return as.actions.actionName === property
         })
-        if (ind !== -1) return cb(null, res[ind].status)
+        if (ind !== -1) return res[ind].status ? cb(null, res[ind].status) : cb(error, res[ind].status)
         cb(null, true)
       }
     })

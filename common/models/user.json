@@ -97,7 +97,7 @@
     {
       "accessType": "*",
       "principalType": "ROLE",
-      "principalId": "test",
+      "principalId": "testing",
       "permission": "ALLOW"
     }
   ],

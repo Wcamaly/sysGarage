@@ -7,10 +7,7 @@ const app = require('../server/server')
 const fixtures = require('./fixtures/')
 const Promise = require('bluebird')
 /**
- * [description]
- * @param  {[type]}   'Start app'          [description]
- * @param  {Function} async  (t)           [description]
- * @return {[type]}          [description]
+ * Started APP
  */
 test.before('Start app', async (t) => {
   if (!app.status) {
@@ -23,25 +20,22 @@ test.before('Start app', async (t) => {
     })
   }
   t.is(typeof Utils.createRole, 'function')
-  let role = fixtures.getRole()
+  let role = [fixtures.getRole()]
   let result = await new Promise((resolve) => {
-    Utils.createRole(role, (req) => {
+    Utils.createRole(role, (err, req) => {
+      if (err) throw err // Faild Get database not Test this cases
       resolve(req)
     })
   })
-  t.is(result.name, role.name)
+
+  t.is(result[0]['name'], role[0].name)
 })
 /**
- * [description]
- * @param  {[type]}   'delete Elements'     [description]
- * @param  {Function} async   (t)           [description]
- * @param  {Function} (err)   [description]
- * @param  {[type]}   (err    [description]
- * @return {[type]}           [description]
+ * Delete Elements for test
  */
 test.after('delete Elements', async (t) => {
   console.log('delete Elements')
-  let Role = app.models.extendRole
+  let Role = app.models.role
   let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {
     Role.destroyAll({where: {name: 'testing'}}, (err) => {
@@ -86,12 +80,14 @@ test('Test Is Primo', (t) => {
  * @return {[type]}          [description]
  */
 test('asign relation Role and id', async (t) => {
-  console.log('asign relation Role and id')
   t.is(typeof Utils.relationMapingRole, 'function')
   let role = fixtures.getRole()
 
   let result = await new Promise((resolve, reject) => {
-    Utils.relationMapingRole({name: role.name, userId: 123}, (err, res) => {
+    Utils.relationMapingRole({
+      name: role.name,
+      principalId: 123
+    }, (err, res) => {
       if (err) reject(new Error(err))
       resolve(res)
     })
@@ -109,7 +105,10 @@ test('asign relation Role and id', async (t) => {
 test('asign relation Role and id error', async (t) => {
   console.log('asign relation Role and id error')
   let result = new Promise((resolve, reject) => {
-    Utils.relationMapingRole({name: 'testinError', userId: 123}, (err, res) => {
+    Utils.relationMapingRole({
+      name: 'testindErrror',
+      principalId: 123
+    }, (err, res) => {
       if (err) reject(new Error(err))
       resolve(res)
     })
@@ -117,4 +116,7 @@ test('asign relation Role and id error', async (t) => {
   await t.throws(result, /Error at create relations/)
 })
 
-test.todo('createMapping')
+test('relationActionsMapingRole', async (t) => {
+  t.is(typeof Utils.relationActionsMapingRole, 'function')
+
+})
