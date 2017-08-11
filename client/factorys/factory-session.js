@@ -1,9 +1,10 @@
- angular.module('myApp.factory.session', [])
-  .factory ('$session', [ function () {
+(function () {
+   angular.module('myApp.factory.session', [])
+  .factory ('$session', ['localStorageService' , function (localStorageService) {
     var session= {}
     function setSession (sess) {
-
       session = sess
+      localStorageService.set('session', session)
     }
     function getPath () {
       return '/'+session.role[0].name
@@ -23,6 +24,11 @@
     }
     function clear () {
       session = {}
+      localStorageService.remove('session')
+    }
+
+    if (localStorageService.get('session')) {
+      session = localStorageService.get('session')
     }
     return {
       setSession: setSession,
@@ -35,3 +41,4 @@
     }
 
   }])
+})()

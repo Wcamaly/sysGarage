@@ -77,3 +77,10 @@ ul li {
   height: 30px;
   padding: 0.5em;
 }
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+md-toat{
+  background-color: #fff;
+}

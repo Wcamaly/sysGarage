@@ -6,10 +6,10 @@
 	    <input type="hidden" class="none" ng-init="perm.actions[$index].id = permisos.id" />
 	    <input type="hidden" class="none" ng-init="perm.actions[$index].actionName= permisos.actionName" />
 	    <p> {{permisos.description}} </p>
-	    <md-switch class="md-secondary md-primary" ng-model="perm.actions[$index].satus" ng-init="perm.actions[$index].satus || 1"></md-switch>
+	    <md-switch class="md-secondary md-primary" ng-model="perm.actions[$index].status" ng-init="perm.actions[$index].status = initPerm(permisos)"></md-switch>
 	  </md-list-item>
 	</md-list>
-	<md-content layout="row" layout-align="end end">
+	<md-content layout="row" layout-align="end end" ng-if="user.permission.length > 0">
 	   <md-button class="md-raised md-primary" ng-click="configPerm()">content</md-button>
 	</md-content>
 

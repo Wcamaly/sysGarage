@@ -1,9 +1,11 @@
-'use strict';
+(function () {
+  'use strict';
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
   'ngRoute',
   'ngMaterial',
+  'LocalStorageModule',
   'myApp.const',
   'myApp.querys',
   'myApp.factory.error',
@@ -18,7 +20,7 @@ angular.module('myApp', [
 config(['$locationProvider', '$routeProvider','$mdThemingProvider','$mdIconProvider' ,
   function($locationProvider, $routeProvider, $mdThemingProvider, $mdIconProvider) {
     $locationProvider.hashPrefix('!');
-    $mdThemingProvider.theme('default').dark()
+    $mdThemingProvider.theme('docs-dark','default').dark()
 
     $routeProvider.when('/login', {
         templateUrl: './views/login/login.html',
@@ -38,3 +40,5 @@ config(['$locationProvider', '$routeProvider','$mdThemingProvider','$mdIconProvi
     })
     $routeProvider.otherwise({redirectTo: '/login'});
 }]);
+
+})()

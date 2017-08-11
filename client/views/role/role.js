@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+  'use strict';
 
 angular.module('view.role', ['directive.calcualtor','directive.managment.user'])
 
@@ -8,12 +9,19 @@ angular.module('view.role', ['directive.calcualtor','directive.managment.user'])
     $scope.urlTemplate = './views/role/'+role+'/'+role+'.html';
     console.log($scope.urlTemplate)
     $scope.username = $session.getusername();
+    $scope.goSignUp = function () {
+      $location.path('/signUp')
+    }
     $scope.logout = function () {
-      $queryServer.logout().then(function () {
-        $session.clear();
-        $accessToken.clear();
-        $location.path('/login')
+      $queryServer.logout().then(lg, lg)
 
-      })
+    function lg () {
+      $session.clear();
+      $accessToken.clear();
+      $location.path('/login')
+    }
+
+
   }
 }]);
+})()

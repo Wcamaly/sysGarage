@@ -11,18 +11,14 @@
         controller: ['$scope','$queryServer','$session',function ($scope, $queryServer, $session) {
             $scope.loading = true;
             $scope.listUser = []
-            var viewlis = [];
+            $scope.viewlis = [];
             $queryServer.listUser({userId: $session.getId()}).then(function (res) {
                 $scope.loading = false;
                 $scope.listUser = res.data;
             })
 
             $scope.show = function (v) {
-                $scope.view[v] = $scope.view[v] ? false : true;
-            }
-
-            $scope.view = function (v) {
-                return viewlis[v]
+                $scope.viewlis[v] = !$scope.viewlis[v];
             }
           }]
         }

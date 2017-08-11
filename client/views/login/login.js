@@ -14,7 +14,9 @@
         })
       }
     }
-
+    $scope.goSignUp = function () {
+       $location.path('/signUp')
+    }
 
   }]);
 })();

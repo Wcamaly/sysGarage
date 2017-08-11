@@ -12,7 +12,6 @@ module.exports = (app) => {
      * @message congratulation
      */
     function createRolesPermission (roles) {
-      console.log('Roles relation')
       let asignRolePermitionCreate = defaults.asignRolePermitionCreateDefault
       _.forEach(roles, (val, i) => {
         let ind = _.findIndex(asignRolePermitionCreate, (o) => { return o.role === val.name })
@@ -42,7 +41,6 @@ module.exports = (app) => {
           username: val.username
         }}, (err, req) => {
           if (err) throw err
-          console.log(`URL ${app.get('url')}`)
           if (!req) {
             let options = {
               method: 'POST',

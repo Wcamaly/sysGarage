@@ -6,9 +6,9 @@
 		    	<p >{{ user.username }} -- {{user.role[0].name}}</p>
 			</div>
 			<md-button class="md-icon-button launch" flex="10"  ng-click="show($index)">
-		        <md-icon class="material-icons">arrow_drop_down_circle</md-icon>
+		        <md-icon class="material-icons" ng-class="{'rotate-180' : viewlis[$index]}">arrow_drop_down_circle</md-icon>
 		    </md-button>
 		</md-content>
-		<app-action user="user" ng-if="view($index)"></app-action>
+		<app-action user="user" ng-if="viewlis[$index]" ></app-action>
 	</li>
 </ul>

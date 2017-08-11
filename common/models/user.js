@@ -10,74 +10,7 @@ module.exports = (User) => {
    */
   User.validatesUniquenessOf('email', {message: 'This user already exists'})
   User.validatesUniquenessOf('name', {message: 'This user already exists'})
-  /**
-   * Evaluates that the user who wants to create does not have to be created by some specific role
-   * @param  String 'create'   method to before ejectute
-   * @param  callback
-   *         @pram Object context   context to instance
-   *         @param Object user   User return ejecute
-   *         @param Object next callback next function
-   * @return Error or continue
-   */
-  User.beforeRemote('create', (context, user, next) => {
-    let typeUserCreate = String(context.args.data.userType).toLowerCase()
-    let userId = context.req.accessToken ? context.req.accessToken.userId : null
-    let perRoleCre = app.models.CreateRolePermissions
 
-    // Define is posible Error
-    let error = new Error()
-    error.status = 401
-    error.message = message.erroBlockCreateUse
-    error.code = message.erroAuth
-
-    // We find that role can create role
-    perRoleCre.find({
-      include: [{
-        relation: 'role',
-        scope: {
-          fields: ['name', 'id']
-        }
-      }, {
-        relation: 'createRole',
-        scope: {
-          where: {'name': typeUserCreate},
-          fields: ['name', 'id']
-        }
-      }]
-    }, (err, res) => {
-      // As loopback does not have join between table we remove all the options that do not have the role that we want to create
-      let rolePerm = _.find(res, (o) => {
-        o = JSON.parse(JSON.stringify(o)) // Parse JSon
-        return o.createRole !== undefined
-      })
-      try {
-        if (err) throw err
-        if (rolePerm && userId) { // eval if exist bloked for role and session
-          User.findById(userId, {
-            fields: {'username': false, 'email': false, 'id': true},
-            include: {
-              relation: 'role',
-              fields: {'id': true, 'name': true, 'description': false, 'created': false, 'modified': false}
-            }
-          }, (err, us) => {
-            if (err) throw err
-            us = JSON.parse(JSON.stringify(us))
-            let roleId = us.role[0].id  // Is thought for if a user has more than one role but as is not the example is placed 0
-            let auths = []
-            auths = _.find(rolePerm, (o) => { return o.role.id === roleId })
-            if (auths.length > 0) {
-              return next()
-            } else return next(error)
-          })
-        } else if (rolePerm) throw error // IF no have session
-
-        next()
-      } catch (e) {
-        console.log(e.message)
-        next(e)
-      }
-    })
-  })
 
  /**
    * Redefine login
@@ -198,7 +131,6 @@ module.exports = (User) => {
         status: val.status
       })
     })
-
     Utils.createPermission(user.id, create, (err, req) => {
       if (err) cb(err)
       cb(null, req)

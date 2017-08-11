@@ -136,7 +136,6 @@ function relationActionsMapingRole (obj, cb) {
  * @return {[type]}       [description]
  */
 function createAction (obj, cb) {
-  console.log('llego hasta aca soy un grande')
   let Actions = app.models.actions
 
   Actions.create(obj, (err, action) => {
@@ -154,6 +153,7 @@ function createAction (obj, cb) {
 function createPermission (userId, obj, cb) {
   let Perm = app.models.permissions
   let aCrear = [ ]
+
   Perm.find({where: {userId: userId}}, (err, permis) => {
     if (err) cb(err)
     if (permis.length > 0) {

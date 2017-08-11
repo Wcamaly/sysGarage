@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+  'use strict';
 
 angular.module('directive.calcualtor', [])
 .directive('appCalculator', function() {
@@ -6,8 +7,8 @@ angular.module('directive.calcualtor', [])
     restrict: 'E',
     replace: true,
     templateUrl: '/components/calculator/calculator.html',
-    controller: ['$scope','$queryServer',function ($scope, $queryServer) {
-
+    controller: ['$scope','$queryServer','$session',function ($scope, $queryServer, $session) {
+      var permission = $session.permission
 
       $scope.calculator = function () {
         if ($scope.calcu.$valid) {
@@ -31,3 +32,4 @@ angular.module('directive.calcualtor', [])
     }]
   }
 });
+})()
