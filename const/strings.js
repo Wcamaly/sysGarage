@@ -8,5 +8,5 @@ module.exports = {
   errorManagmenSelf: 'You can not remove permissions yourself',
   errorBloked: 'BLOCKED_REQUIRED',
   errorTryAgainLater: 'If an error occurred, please try again later',
-  statusSussesfull: 'Succesfull created!'
+  statusSussesfull: 'Succesfull asign permision.'
 }

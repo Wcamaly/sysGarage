@@ -33,9 +33,9 @@
           $scope.configPerm = function() {
             $queryServer.managmentPermission($scope.perm).then(function(res) {
               console.log(res)
-              if (res.data.status === 'Ok') {
+              if (res.data.data.status === 'Ok') {
                 var toast = $mdToast.simple()
-                  .textContent(res.data.message)
+                  .textContent(res.data.data.message)
                   .highlightAction(true)
                   .highlightClass('md-warn')
                   .position("bottom right");

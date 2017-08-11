@@ -75,7 +75,6 @@ test.after('delete Users', async (t) => {
  * SignUp sussesfull
  */
 test('Calculator if prime number', async (t) => {
-  try {
     let user = fixtures.getUser()
     let credential = {
       email: user.email,
@@ -105,5 +104,4 @@ test('Calculator if prime number', async (t) => {
     }
     let result = await request(optionsListUser)
     t.true(result.body.data.prime)
-  } catch (e) { console.log(e) }
 })

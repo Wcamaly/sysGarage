@@ -124,10 +124,13 @@ module.exports = (User) => {
     actions.forEach((val, i) => {
       create.push({
         actionId: val.id,
-        status: val.status
+        status: val.status,
+        userId: user.id
       })
     })
+    console.log(`creaaar${JSON.stringify(create)}`)
     Utils.createPermission(user.id, create, (err, req) => {
+      console.log(`EROR ${err}, REQ${JSON.stringify(req)}`)
       if (err) cb(err)
       cb(null, req)
     })
