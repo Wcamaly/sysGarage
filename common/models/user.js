@@ -113,7 +113,7 @@ module.exports = (User) => {
     http: {path: '/listUsers', verb: 'post'}
   })
   /**
-   * permite setear permisos para usuarios especificos menos para si mismo
+   * Allows you to set permissions for specific users less for yourself
    * @param  Obj   user    User for at create permissions
    * @param  Obj  actions Acction at blocked or desbloked
    * @param  {Function} cb      callback continue
@@ -123,7 +123,6 @@ module.exports = (User) => {
     let create = [ ]
     actions.forEach((val, i) => {
       create.push({
-        userId: user.id,
         actionId: val.id,
         status: val.status
       })
@@ -138,5 +137,12 @@ module.exports = (User) => {
               {arg: 'actions', type: 'Object'}],
     returns: {arg: 'data', type: 'Object', root: true},
     http: {path: '/managmentPermission', verb: 'post'}
+  })
+
+  User.afterRemote('**', (ctx, prime, next) => {
+    ctx.result = {
+      data: ctx.result
+    }
+    next()
   })
 }

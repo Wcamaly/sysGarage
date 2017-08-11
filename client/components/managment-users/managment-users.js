@@ -14,7 +14,7 @@
             $scope.viewlis = [];
             $queryServer.listUser({userId: $session.getId()}).then(function (res) {
                 $scope.loading = false;
-                $scope.listUser = res.data;
+                $scope.listUser = res.data.data;
             })
 
             $scope.show = function (v) {

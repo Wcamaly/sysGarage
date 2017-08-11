@@ -72,6 +72,11 @@ function createRole (obj, cb) {
 /**
  * [relationMapingRole Carry out the mapping of the user with the corresponding paper]
  * @param  {Object}   obj One Objen with mapping
+ *                  @EJEM
+ *                      {
+ *                        name: 'testing',
+ *                        principalId: 2
+ *                      }
  * @param  {Function} cb  [callback finished created]
  */
 function relationMapingRole (obj, cb) {
@@ -101,7 +106,7 @@ function relationMapingRole (obj, cb) {
  * @param  {Object}   obj Element to relation
  *                  @EJEM {
  *                   name: 'admin',
- *                    principalId: 1
+ *                   principalId: 1
  *                  }
  * @param  {Function} cb  callback ejecute
  * @return {[type]}       MApping raltions
@@ -130,8 +135,12 @@ function relationActionsMapingRole (obj, cb) {
   })
 }
 /**
- * [createAction description]
- * @param  {[type]}   obj [description]
+ * createAction Create the possible actions that will be in the app
+ * @param  {Array}   obj  List of objects to create, does not contemplate repeated
+ *         @ejem [{
+                  actionName: 'create',
+                  description: 'Create User Admin'
+                }]
  * @param  {Function} cb  [description]
  * @return {[type]}       [description]
  */
@@ -144,11 +153,16 @@ function createAction (obj, cb) {
   })
 }
 /**
- * [createPermission description]
- * @param  {[type]}   userId [description]
- * @param  {[type]}   obj    [description]
- * @param  {Function} cb     [description]
- * @return {[type]}          [description]
+ * [createPermission Creates the permissions that are assigned to a specific user]
+ * @param  {Number}   userId Id user
+ * @param  {[Array]}   obj
+ *                   @Ejem {
+ *                           actionId: 1,
+ *                           status: true/false,
+ *                           userId: 1
+ *                         }
+ * @param  cb  callback ejecute
+ * @return status Ok
  */
 function createPermission (userId, obj, cb) {
   let Perm = app.models.permissions
@@ -193,7 +207,6 @@ function createPermission (userId, obj, cb) {
  *                    'client': ['calcPrime']
  *                    }
  * @param  {Function} cb  callback ejecute
- * @return {[type]}       MApping raltions
  */
 function asignRolePermCreate (listperm, cb) {
   let croleperm = app.models.CreateRolePermissions
@@ -214,6 +227,7 @@ function asignRolePermCreate (listperm, cb) {
       }
     })
   })
-  cb()
+  let i = true
+  cb(i)
 }
 module.exports = Utils

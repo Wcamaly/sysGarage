@@ -6,10 +6,11 @@
     "node": ">=4"
   },
   "scripts": {
-    "mysql": "node bin/automigrate",
+    "createDb": "node bin/createDb" ,
+    "mysql": "node bin/createDb && node bin/automigrate",
     "lint": "standard",
     "start": "node .",
-    "test": "npm run lint && ava --serial --tap test/**-test.js"
+    "test": "npm run lint && ava test/**-test.js --serial"
   },
   "standard": {
     "parser": "babel-eslint",

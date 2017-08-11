@@ -2,19 +2,17 @@
  * Testin Authorization
  */
 
-const test = require('ava') // eslint-disable-line
-const app = require('../server/server') // eslint-disable-line
-const request = require('request-promises') // eslint-disable-line
-const fixtures = require('./fixtures/') // eslint-disable-line
-const listen = require('test-listen') // eslint-disable-line
-const Utils = require('../utils/utils') // eslint-disable-line
+const test = require('ava')
+const app = require('../server/server')
+const request = require('request-promises')
+const fixtures = require('./fixtures/')
+const listen = require('test-listen')
+const Utils = require('../utils/utils')
 const Promise = require('bluebird')
+const _ = require('lodash')
 let url
 /**
- * [description]
- * @param  {[type]}   'Start app'          [description]
- * @param  {Function} async  (t)           [description]
- * @return {[type]}          [description]
+ * Start App
  */
 test.before('Start app', async (t) => {
   if (!app.status) {
@@ -25,29 +23,23 @@ test.before('Start app', async (t) => {
       })
     })
     url = await listen(srv)
-  }
-
-  let role = [fixtures.getRole()]
-  await new Promise((resolve) => {
-    Utils.createRole(role, (req) => {
-      resolve(req)
+    let role = [fixtures.getRole()]
+    await new Promise((resolve) => {
+      Utils.createRole(role, (req) => {
+        resolve(req)
+      })
     })
-  })
+  }
 })
 /**
- * [description]
- * @param  {[type]}   'delete Elements'     [description]
- * @param  {Function} async   (t)           [description]
- * @param  {Function} (err)   [description]
- * @param  {[type]}   (err    [description]
- * @return {[type]}           [description]
+ * Delete Elements
  */
 test.after('delete Elements', async (t) => {
   let Role = app.models.role
   let RoleMapping = app.models.RoleMapping
   // let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {
-    Role.destroyAll({where: {name: 'testing'}}, (err) => {
+    Role.destroyAll({}, (err) => {
       if (err) throw err
       resolve()
     })
@@ -70,7 +62,7 @@ test.afterEach('delete Users', async (t) => {
   let User = app.models.user
   // let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {
-    User.destroyAll({where: {id: t.context.idUser}}, (err, info) => {
+    User.destroyAll({}, (err, info) => {
       if (err) throw err
       resolve()
     })
@@ -90,9 +82,10 @@ test('Create user susseful', async (t) => {
   }
 
   let res = await request(options)
-  t.context.idUser = res.body.id
+
+  t.context.idUser = res.body.data.id
   t.is(res.statusCode, 200)
-  t.deepEqual(res.body.username, user.username)
+  t.deepEqual(res.body.data.username, user.username)
 })
 /**
  * Sign UP fail role no exist
@@ -117,7 +110,6 @@ test('SignUp Client user Role no exist', async (t) => {
  * Login user
  */
 test('Login User', async (t) => {
-  console.log('login USer')
   let user = fixtures.getUser()
   let options = {
     method: 'POST',
@@ -171,8 +163,9 @@ test('Login User error credential', async (t) => {
   }
 
   let result = await request(optionsLogin)
+
   t.is(result.statusCode, 401)
-  t.is(result.body.error.message, 'el inicio de sesión ha fallado')
+  t.is(result.body.error.name, 'Error')
 })
 /**
  * List user
@@ -206,7 +199,6 @@ test('List User', async (t) => {
   let i = auth.indexOf(':') + 1
   let accessToken = auth.substr(i, auth.length).replace(/ /g, '')
 
-  console.log(`accessToken --- ${accessToken}`)
   let optionsListUser = {
     method: 'POST',
     url: `${url}/api/users/listUsers?access_token=${accessToken}`,
@@ -218,10 +210,11 @@ test('List User', async (t) => {
   }
 
   let result = await request(optionsListUser)
-  t.is(result.statusCode, 200)
-  result.body.Users.forEach((val, i) => {
-    t.false(val.id === response.body.id)
-  })
-})
 
-test.todo('user managment')
+  t.is(result.statusCode, 200)
+  let ind = _.find(result.body.data, (o) => { return o.id === response.body.id })
+  t.is(ind, undefined)
+})
+test.serial(t => {
+  t.pass()
+})

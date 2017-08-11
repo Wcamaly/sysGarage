@@ -2,6 +2,7 @@
    angular.module('myApp.factory.session', [])
   .factory ('$session', ['localStorageService' , function (localStorageService) {
     var session= {}
+    var extra = {}
     function setSession (sess) {
       session = sess
       localStorageService.set('session', session)
@@ -26,6 +27,13 @@
       session = {}
       localStorageService.remove('session')
     }
+    function setExtra (key, obj) {
+      extra[key] = obj
+    }
+    function getExtra (key){
+      return extra[key]
+    }
+
 
     if (localStorageService.get('session')) {
       session = localStorageService.get('session')
@@ -37,7 +45,9 @@
       getId: getId,
       getPermissions: getPermissions,
       getusername: getusername,
-      clear :clear
+      clear :clear,
+      setExtra: setExtra,
+      getExtra: getExtra
     }
 
   }])

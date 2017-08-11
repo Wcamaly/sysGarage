@@ -14,7 +14,6 @@ test.before('Start app', async (t) => {
     app.start()
     await new Promise((resolve) => {
       app.on('started', () => {
-        console.log('Started Server')
         resolve()
       })
     })
@@ -31,33 +30,68 @@ test.before('Start app', async (t) => {
   t.is(result[0]['name'], role[0].name)
 })
 /**
- * Delete Elements for test
+ * Delete Role
  */
-test.after('delete Elements', async (t) => {
-  console.log('delete Elements')
+test.after('Delete Role', async (t) => {
   let Role = app.models.role
-  let RoleMapping = app.models.RoleMapping
   await new Promise((resolve) => {
-    Role.destroyAll({where: {name: 'testing'}}, (err) => {
-      if (err) throw err
-      resolve()
-    })
-  })
-  await new Promise((resolve) => {
-    RoleMapping.destroyAll({where: {principalId: '123'}}, (err) => {
+    Role.destroyAll({}, (err) => {
       if (err) throw err
       resolve()
     })
   })
 })
 /**
- * [description]
- * @param  {[type]} 'Test Is            Primo' [description]
- * @param  {[type]} (t    [description]
- * @return {[type]}       [description]
+ * Delete Elements for test
+ */
+test.afterEach('delete Elements', async (t) => {
+  let RoleMapping = app.models.RoleMapping
+  await new Promise((resolve) => {
+    RoleMapping.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+  await new Promise((resolve) => {
+    let Mapping = app.models.ActionMapping
+    Mapping.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+  await new Promise((resolve) => {
+    let Actions = app.models.actions
+    Actions.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+  await new Promise((resolve) => {
+    let Perm = app.models.permissions
+    Perm.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+  await new Promise((resolve) => {
+    let croleperm = app.models.CreateRolePermissions
+    croleperm.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+  await new Promise((resolve) => {
+    let User = app.models.user
+    User.destroyAll({}, (err) => {
+      if (err) throw err
+      resolve()
+    })
+  })
+})
+/**
+ * Test if prime number
  */
 test('Test Is Primo', (t) => {
-  console.log('Test Is Primo')
   t.is(typeof Utils.primeNumber, 'function')
 
   let n0 = 7
@@ -73,11 +107,7 @@ test('Test Is Primo', (t) => {
   t.false(Utils.primeNumber(n5))
 })
 /**
- * [description]
- * @param  {[type]}   'asign relation      Role          and id' [description]
- * @param  {Function} async  (t)           [description]
- * @param  {[type]}   (err,  res           [description]
- * @return {[type]}          [description]
+ * Asign Role for Id
  */
 test('asign relation Role and id', async (t) => {
   t.is(typeof Utils.relationMapingRole, 'function')
@@ -96,14 +126,9 @@ test('asign relation Role and id', async (t) => {
   t.is(result.principalId, '123')
 })
 /**
- * [description]
- * @param  {[type]}   'asign relation      Role          and id error' [description]
- * @param  {Function} async  (t)           [description]
- * @param  {[type]}   (err,  res           [description]
- * @return {[type]}          [description]
+ * Test Error Asign Role user
  */
 test('asign relation Role and id error', async (t) => {
-  console.log('asign relation Role and id error')
   let result = new Promise((resolve, reject) => {
     Utils.relationMapingRole({
       name: 'testindErrror',
@@ -115,7 +140,64 @@ test('asign relation Role and id error', async (t) => {
   })
   await t.throws(result, /Error at create relations/)
 })
-
+/**
+ * Test Relation Action whit Role
+ */
 test('relationActionsMapingRole', async (t) => {
   t.is(typeof Utils.relationActionsMapingRole, 'function')
+  let ejem = {
+    name: 'testing',
+    principalId: 1
+  }
+  let result = await new Promise((resolve) => {
+    Utils.relationActionsMapingRole(ejem, (err, res) => {
+      if (err) throw err
+      resolve(res)
+    })
+  })
+  t.is(result.actionsId, ejem.principalId)
+})
+/*
+* Creat Action
+ */
+test('createAction', async (t) => {
+  t.is(typeof Utils.createAction, 'function')
+  let data = [{
+    actionName: 'createTesting',
+    description: 'Create User testing'
+  }]
+  await new Promise((resolve) => {
+    Utils.createAction(data, (resp) => {
+      t.is(resp[0].actionName, data[0].actionName)
+      resolve()
+    })
+  })
+})
+/**
+* Test Create permission
+ */
+test('createPermission', async (t) => {
+  t.is(typeof Utils.createPermission, 'function')
+  let us = fixtures.getUser()
+  let User = app.models.user
+  await new Promise((resolve) => {
+    User.create(us, (err, user) => {
+      if (err) throw err
+      let data = {
+        actionId: 1,
+        status: true,
+        userId: user.id
+      }
+      t.context.userId = user.id
+      Utils.createPermission(user.id, data, (err, resp) => {
+        if (err) throw err
+        t.is(resp.status, 'Ok')
+        resolve()
+      })
+    })
+  })
+})
+
+test.serial(t => {
+  t.pass()
 })

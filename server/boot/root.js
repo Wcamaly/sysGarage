@@ -23,7 +23,7 @@ module.exports = (server) => {
     }
     Role.find(query, (err, response) => {
       if (err) next(err)
-      res.status(200).json(response)
+      res.status(200).json({data: response})
     })
   })
   server.use(router)
