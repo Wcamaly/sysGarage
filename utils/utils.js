@@ -179,9 +179,9 @@ function createPermission (userId, obj, cb) {
       })
     } else {
       cb(null, {
-          status: 'Ok',
-          message: message.statusSussesfull
-        })
+        status: 'Ok',
+        message: message.statusSussesfull
+      })
     }
   })
 }

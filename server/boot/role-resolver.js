@@ -32,7 +32,6 @@ module.exports = (app) => {
     let userId = context.accessToken.userId
     // We defined possible error
 
-
     if (!userId) {
       return process.nextTick(() => cb(null, false))
     }
@@ -93,7 +92,6 @@ module.exports = (app) => {
             })
           } else if (rolePerm) throw error // IF no have session
         } catch (e) {
-
           cb(e, false)
         }
       })

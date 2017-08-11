@@ -10,19 +10,17 @@ module.exports = (server) => {
 
   let router = server.loopback.Router()
 
-
   // router.get('/', server.loopback.status());
   router.post('/getDefaultRoleActions', (req, res, next) => {
     let role = req.body.role
     let query = {
-      where: {name : role},
-      fields: {name: true, id: true, modified: false, created:false, description:false},
+      where: {name: role},
+      fields: {name: true, id: true, modified: false, created: false, description: false},
       include: {relation: 'actions'}
     }
-
-    if (!role)
+    if (!role) {
       delete query.where
-
+    }
     Role.find(query, (err, response) => {
       if (err) next(err)
       res.status(200).json(response)

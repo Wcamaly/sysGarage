@@ -118,5 +118,4 @@ test('asign relation Role and id error', async (t) => {
 
 test('relationActionsMapingRole', async (t) => {
   t.is(typeof Utils.relationActionsMapingRole, 'function')
-
 })

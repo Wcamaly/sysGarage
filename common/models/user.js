@@ -1,7 +1,5 @@
 'use strict'
 const Utils = require('../../utils/utils')
-const app = require('../../server/server')
-const _ = require('lodash')
 const message = require('../../const/strings')
 module.exports = (User) => {
   /**
@@ -10,7 +8,6 @@ module.exports = (User) => {
    */
   User.validatesUniquenessOf('email', {message: 'This user already exists'})
   User.validatesUniquenessOf('name', {message: 'This user already exists'})
-
 
  /**
    * Redefine login
@@ -112,7 +109,7 @@ module.exports = (User) => {
   }
   User.remoteMethod('listUsers', {
     accepts: {arg: 'userId', type: 'number'},
-    returns: {arg: 'Users', type: 'array', root:true},
+    returns: {arg: 'Users', type: 'array', root: true},
     http: {path: '/listUsers', verb: 'post'}
   })
   /**
@@ -142,6 +139,4 @@ module.exports = (User) => {
     returns: {arg: 'data', type: 'Object', root: true},
     http: {path: '/managmentPermission', verb: 'post'}
   })
-
-
 }
